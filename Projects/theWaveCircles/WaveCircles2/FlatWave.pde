@@ -1,65 +1,66 @@
 public class FlatWave {
   float len;
-  float amp;
   float lendiv;
   float noiseY;
   float xin;
   float start;
   ArrayList<Float> points = new ArrayList<Float>();
   
-  public FlatWave(float len_, float amp_, float lendiv_) {
-    this(len_, amp_, lendiv_, random(-10000, 10000), random(-10000, 10000)); 
+  public FlatWave(float len_, float lendiv_) {
+    this(len_, lendiv_, random(-10000, 10000), random(-10000, 10000)); 
   }
   
-  public FlatWave(float len_, float amp_, float lendiv_, float xin_, float yin_) {
+  public FlatWave(float len_, float lendiv_, float xin_, float yin_) {
     xin = xin_;
     noiseY = yin_;
     len = len_;
-    amp = amp_;
     lendiv = lendiv_;
     calculate();
   }
   
   void calculate(){
     points.clear();
-    start = noise(xin/ lendiv, noiseY / lendiv) * amp;
-    float end = noise((len + xin - 1) / lendiv, noiseY / lendiv) * amp;
+    System.out.println(points.size());
+    start = noise(xin/ lendiv, noiseY / lendiv);
+    float end = noise((len + xin - 1) / lendiv, noiseY / lendiv);
     float diffY = end - start;
     float slope = diffY / (len);
     for (float i = xin; i < len + xin; i++) {
       float x = i - xin;
-      points.add(noise(i / lendiv, noiseY / lendiv) * amp + (-slope * (x)));
+      points.add(noise(i / lendiv, noiseY / lendiv) - start + (-slope * (x)));
+      //System.out.println(len);
     }
   }
   
   //returns the point with that also has any matching start and end point
-  float getPoint(int index){
+  /**float getPoint(int index){
     //some weird behavior, can go all over the place with big amp
-    return points.get(index) - amp / 2;
-  }
+    return points.get(index) - 1 / 2;
+  }**/
   
-  float getPointCirc(int index, float r, float mult){
-    float y = map(points.get(index), 0, amp, -r * mult, r * mult);
-    y *= smoothCircEnds(index, r);
+  /**float getPointCirc(int index, float r, float mult){
+    float y = map(points.get(index), 0, 1, -r * mult, r * mult);
+    //y *= smoothCircEnds(index, r);
     return y;
-  }
+  }**/
   
   //returns the points where both end at 0
   float getPointStand(int index, float r, float mult){
-    float y = map(points.get(index), 0, amp, -r * mult, r * mult);
+    float y = map(points.get(index), -1, 1, -r * mult, r * mult);
     y *= smoothCircEnds(index, r);
-    return y - start;
+    return y + (start -.5) * mult * r;
   }
   
   float smoothCircEnds(float index, float r){
-   System.out.println("i: " + index + " r: " + r + " flat.len - r - 1: " + (flat.len - 1 - r));
-   if(index < r){
-      System.out.println("lesser");
-      return (index / r);
+    float dist = r / 5;
+   //System.out.println("i: " + index + " r: " + r + " len - r - 1: " + (len - 1 - r));
+   if(index < dist){
+      //System.out.println("lesser");
+      return pow((index / dist), 1);
     }
-    else if(index > flat.len - r - 1){
-      System.out.println("greater");
-      return (index - (flat.len - r) / flat.len - 1);
+    else if(index > len - dist){
+      //System.out.println("greater");
+      return pow(((len - index) / dist), 1);
     } 
     else{
      return 1; 
@@ -81,7 +82,7 @@ public class FlatWave {
     strokeWeight(2);
     for(int x = 0; x < points.size() - 1; x++){
       //point(x, points.get(x) + height / 2);
-      line(x, flat.getPointStand(x) + height / 2, x + 1, flat.getPointStand(x + 1) + height / 2);
+      line(x, flat.getPointStand(x, len, 1) + height / 2, x + 1, flat.getPointStand(x + 1, len, 1) + height / 2);
     }
   }**/
 }

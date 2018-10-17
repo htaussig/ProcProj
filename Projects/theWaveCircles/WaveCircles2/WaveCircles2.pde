@@ -1,21 +1,22 @@
-float AMP = 1490;
+
 float LENDIV = 1220;
-int NUMCIRCS = 1;
+int NUMCIRCS = 7;
 
 float start;
 float xin;
 
 FlatWave flat;
+
 ArrayList<WaveCircle> circles;
 
 void setup() {
+  flat = new FlatWave(800, 10);
   colorMode(HSB, 99);
   frameRate(60);
   size(800, 800);
   circles = new ArrayList<WaveCircle>();
-  flat = new FlatWave(width, AMP, LENDIV);
   for(int i = 0; i < NUMCIRCS; i++){
-    WaveCircle circ = new WaveCircle(width / 2, height / 2, i * 20 + 60);
+    WaveCircle circ = new WaveCircle(width / 2, height / 2, i * 20 + 20);
     circ.setColor(color((i * 5 + 30) % 99, 100, 100, 70));
     circles.add(0, circ);
   }

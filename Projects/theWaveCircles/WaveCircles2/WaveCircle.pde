@@ -6,6 +6,7 @@ public class WaveCircle {
   float lastAddR;
   float noiseX;
   color col;
+  float ain;
 
   public WaveCircle(float x_, float y_, float r_, float xin, float yin) {
     x = x_;
@@ -13,10 +14,8 @@ public class WaveCircle {
     r = r_;
     col = (color(255, 0, 0));
     noiseX = random(-2, 2);
-    flat = new FlatWave(PI * r, 1, 310, xin, yin);
-    if(PI * r > 800){
-      System.out.println("array size is greater than 800");
-    }
+    flat = new FlatWave(TWO_PI * r, .1, xin, yin);
+    ain = random(TWO_PI);
   }
 
   public WaveCircle(float x_, float y_, float r_) {
@@ -25,10 +24,8 @@ public class WaveCircle {
     r = r_;
     col = (color(255, 0, 0));
     noiseX = random(-2, 2);
-    flat = new FlatWave(PI * r, 1, 310);
-    if(PI * r > 800){
-      System.out.println("array size is greater than 800");
-    }
+    flat = new FlatWave(PI * r, 310);
+    ain = random(TWO_PI);
   }
 
   void setColor(color col_) {
@@ -44,12 +41,10 @@ public class WaveCircle {
     translate(x, y);
     int index = 0;
     beginShape();
-    for (float a = 0; a < TWO_PI; a += 2 / r) {
-      float newR = r;
-      float nextAddR = 0;
+    for (float a = ain; a < TWO_PI + ain; a += 2 / r) {
+      float newR = 0;
       if (flat.points.size() > index) {
-        nextAddR = getWave(index);
-        newR += nextAddR;
+        newR = r + getWave(index);
       }
       index++;
       vertex(cos(a) * newR, sin(a) * newR);
@@ -60,12 +55,12 @@ public class WaveCircle {
   
   float getWave(int index) {
     float y;
-    if (flat.len == TWO_PI * r) {
-      y = flat.getPointCirc(index, r, 1.5);
+    /**if (flat.len == TWO_PI * r) {
+      y = flat.getPointCirc(index, r, 2.5);
     }
-    else{
-      y = flat.getPointStand(index, r, 1.5);
-    }
+    else{**/
+      y = flat.getPointStand(index, r, 1);
+    //}
     return y;
   }
 }

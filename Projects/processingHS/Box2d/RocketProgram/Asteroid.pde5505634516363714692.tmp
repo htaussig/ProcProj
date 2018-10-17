@@ -1,0 +1,31 @@
+public abstract class Asteroid extends Displayable{
+  
+  public abstract void display();
+  
+  public float r, g, b;
+  
+  public float health;
+  
+  void setRandomColor(){
+    r = random(255);
+    g = random(255);
+    b = random(255);
+  }
+  
+  public void collide(float impulse){
+    health -= impulse;
+    
+    if(health <= 0){
+      explode();
+    }
+  }
+  
+  public void explode(){
+    System.out.println("explosion!, you didn't override this method harry...")
+  }
+  
+  void applyForceCenter(Vec2 force){
+   Vec2 pos = body.getWorldCenter();
+   body.applyForce(force, pos);
+  }
+}

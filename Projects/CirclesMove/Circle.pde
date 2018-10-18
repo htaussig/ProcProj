@@ -1,25 +1,44 @@
-public class Circle{
+float MAXSPEED = .2;
+
+public class Circle {
   float r;
   PVector pos;
+  PVector vel;
+  PVector acc;
   color col;
-  float lastA;
-  
-  public Circle(PVector pos_, float r_, color col_){
+
+  public Circle(PVector pos_, float r_) {
+    this(pos_, r_, color(0));
+  }
+
+  public Circle(PVector pos_, float r_, color col_) {
     pos = pos_;
     r = r_;
     col = col_;
-    lastA = random(TWO_PI);
+    //vel = PVector.random2D();
+    vel = new PVector();
+    acc = new PVector(0, 0);
   }
-  
-  public Circle(PVector pos_, float r_, float a){
-    pos = pos_;
-    r = r_;
-    lastA = a;
+
+  public void setColor(color col_){
+   col = col_; 
   }
-  
-  void display(){
+
+  public void update() {
+    vel.add(acc);
+    vel.limit(MAXSPEED);
+    pos.add(vel);
+    acc.mult(0);
+  }
+
+  public void applyForce(PVector force) {
+    //f = m / a
+    acc.add(force.mult(1 / r));
+  }
+
+  void display() {
     fill(col);
     noStroke();
-    ellipse(pos.x, pos.y, r * 2,r * 2);
+    ellipse(pos.x, pos.y, r * 2, r * 2);
   }
 }

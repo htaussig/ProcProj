@@ -1,7 +1,7 @@
 ArrayList<Circle> circles;
-float minCircRadius = 5;
+float minCircRadius = 7;
 float maxCircRadius = 80;
-float minDistance = 9;
+float minDistance = 19;
 float colDeviation = 10;
 float colDeviationThird = 5;
 float colDeviationBack = 7;
@@ -13,6 +13,9 @@ float bri;
 color backgroundCol;
 
 float SPEED = .5;
+float WALLFORCE = .0000002;
+float REPELMULT = 1;
+float WALLDIST = 2;
 
 void setup() {
   size(800, 800);
@@ -37,37 +40,48 @@ void draw() {
 }
 
 void moveAllCircles() {
-  ArrayList<Circle> beforeCircles = new ArrayList<Circle>();
-  for (Circle circle : circles) {
-    beforeCircles.add(new Circle(circle.pos, circle.r, circle.lastA));
-  }
   for (int i = 0; i < circles.size(); i++) {
-    Circle circle = beforeCircles.get(i);
-    for (float a = circle.lastA; a < TWO_PI + circle.lastA; a += PI / 180) {
-      PVector tempPos = PVector.add(circle.pos, new PVector(SPEED * cos(a), SPEED * sin(a)));
-      //System.out.println(tempPos);
-      if(isValidMove(tempPos, circle.r, beforeCircles)){
-        //System.out.println("true");
-        Circle realCirc = circles.get(i);
-        realCirc.pos = tempPos;
-        realCirc.lastA = a;
-        break;
+    Circle circ1 = circles.get(i);
+    float dx = (width / 2) - circ1.pos.x;
+    float dy = (height / 2) - circ1.pos.y;
+    float fx = WALLFORCE * abs(dx) * dx;
+    float fy = WALLFORCE * abs(dy) * dy;
+    //could define the edge differently
+    circ1.applyForce(new PVector(fx, fy));
+    
+      for (int j = i + 1; j < circles.size(); j++) {
+
+      Circle circ2 = circles.get(j);
+
+      float dist = distance(circ1, circ2);
+      if(dist <= circ1.r + circ2.r + minDistance + 10){
+      repel(circ1, circ2, dist);
       }
     }
   }
+  for (Circle circle : circles) {
+    circle.update();
+  }
 }
 
-boolean isValidMove(PVector pos, float r, ArrayList<Circle> circles){
+void repel(Circle circ1, Circle circ2, float dist) {
+  float force = REPELMULT * circ2.r * circ1.r / (dist * dist);
+  float a = PVector.sub(circ1.pos, circ2.pos).heading();
+  circ1.applyForce(new PVector(cos(a) * force, sin(a) * force));
+  circ2.applyForce(new PVector(cos(a + PI) * force, sin(a + PI) * force));
+}
+
+/**boolean isValidMove(PVector pos, float r, ArrayList<Circle> circles){
  for(Circle circ2 : circles){
-   float dist = PVector.dist(pos, circ2.pos);
-   if(dist >= SPEED && dist <= r + circ2.r + minDistance){
-     //System.out.println("false");
-     return false;
-   }  
+ float dist = PVector.dist(pos, circ2.pos);
+ if(dist >= SPEED && dist <= r + circ2.r + minDistance){
+ //System.out.println("false");
+ return false;
+ }  
  }
  //System.out.println("not false");
  return true;
-}
+ }**/
 
 void nextCircle() {
   while (createCircles(0)) {
@@ -75,7 +89,7 @@ void nextCircle() {
 }
 
 boolean createCircles(int num) {
-  if (num >= 1000) {
+  if (num >= 100) {
     return false;
   }
 

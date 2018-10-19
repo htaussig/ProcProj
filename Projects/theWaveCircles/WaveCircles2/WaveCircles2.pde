@@ -16,7 +16,7 @@ void setup() {
   size(800, 800);
   circles = new ArrayList<WaveCircle>();
   for(int i = 0; i < NUMCIRCS; i++){
-    WaveCircle circ = new WaveCircle(width / 2, height / 2, i * 20 + 20);
+    WaveCircle circ = new WaveCircle(width / 2, height / 2, i * 25 + 20);
     circ.setColor(color((i * 5 + 30) % 99, 100, 100, 70));
     circles.add(0, circ);
   }

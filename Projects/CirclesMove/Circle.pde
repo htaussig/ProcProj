@@ -15,7 +15,7 @@ public class Circle {
     pos = pos_;
     r = r_;
     col = col_;
-    //vel = PVector.random2D();
+    //vel = PVector.fromAngle(PI);
     vel = new PVector();
     acc = new PVector(0, 0);
   }

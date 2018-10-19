@@ -1,7 +1,7 @@
 ArrayList<Circle> circles;
 float minCircRadius = 7;
-float maxCircRadius = 20;
-float minDistance = 19;
+float maxCircRadius = 40;
+float minDistance = 10;
 float colDeviation = 10;
 float colDeviationThird = 5;
 float colDeviationBack = 7;
@@ -13,9 +13,18 @@ float bri;
 color backgroundCol;
 
 float SPEED = .5;
-float WALLFORCE = .0000002;
-float REPELMULT = .6;
-float WALLDIST = 2;
+float WALLFORCE = .00000072;
+float REPELMULT = 1.8;
+
+//flowfield stuff
+float zoff = 0;
+float scl = 10;
+int rows, cols;
+PVector[] flowField;
+float inc = 0.055;
+float zInc = 0.00082;
+float xin;
+float yin;
 
 void setup() {
   size(800, 800);
@@ -26,41 +35,93 @@ void setup() {
   circles = new ArrayList<Circle>();
   nextCircle();
 
+  initFlowField();
 
   backgroundCol = getBackgroundCol();
 }
 
 void draw() {
   background(backgroundCol);
+  drawFlowField();
   moveAllCircles();
   for (Circle circle : circles) {
+    circle.follow(flowField);
+    circle.edges();
     circle.display();
   }
-  //System.out.println(frameCount);
+  //System.out.println(frameRate);
+}
+
+void initFlowField() {
+  rows = (int) (height / scl + 1);
+  cols = (int) (width / scl + 1); 
+  flowField = new PVector[cols * rows];
+  xin = random(-100000, 100000);
+  yin = random(-100000, 100000);
+}
+
+void drawFlowField() {
+  float yoff = yin;
+  for (int y = 0; y < rows; y++) {
+    float xoff = xin;
+    for (int x = 0; x < cols; x++) {
+      int index = (int) (x + (y * cols));
+      float angle = noise(xoff, yoff, zoff) * TWO_PI * 1.7;
+      PVector v = PVector.fromAngle(angle);
+      v.setMag(.09);
+      addWallForce(x * scl, y * scl, v);
+      flowField[index] = v;
+      xoff += inc;
+      /**stroke(0, 50);
+       pushMatrix();
+       translate(x * scl, y * scl);
+       rotate(v.heading());
+       strokeWeight(1);
+       line(0, 0, scl, 0);
+       popMatrix();**/
+    }
+    yoff += inc;
+  }
+  zoff += zInc;
+}
+
+void addWallForce(float x, float y, PVector v) {
+  float dx = (width / 2) - x;
+  float dy = (height / 2) - y;
+  float fx = WALLFORCE * abs(dx) * dx;
+  float fy = WALLFORCE * abs(dy) * dy;
+
+  v.add(new PVector(fx, fy));
 }
 
 void moveAllCircles() {
   for (int i = 0; i < circles.size(); i++) {
     Circle circ1 = circles.get(i);
-    float dx = (width / 2) - circ1.pos.x;
-    float dy = (height / 2) - circ1.pos.y;
-    float fx = WALLFORCE * abs(dx) * dx;
-    float fy = WALLFORCE * abs(dy) * dy;
-    //could define the edge differently
-    circ1.applyForce(new PVector(fx, fy));
-    
-      for (int j = i + 1; j < circles.size(); j++) {
+
+    for (int j = i + 1; j < circles.size(); j++) {
 
       Circle circ2 = circles.get(j);
 
       float dist = distance(circ1, circ2);
-      if(dist <= circ1.r + circ2.r + minDistance + 10){
-      repel(circ1, circ2, dist);
-      }
+      repelCheck(circ1, circ2, dist);
     }
   }
   for (Circle circle : circles) {
     circle.update();
+  }
+}
+
+void repelCheck(Circle circ1, Circle circ2, float dist) {
+  PVector lastPos1 = circ1.pos.copy();
+  //checks for corner and edge repulsion
+  for (int i = -1; i <= 1; i ++) {
+    for (int j = -1; j <= 1; j++) {
+      circ1.pos.add(new PVector(i * width, j * height));
+      if (closeEnough(circ1, circ2, dist)) {
+        repel(circ1, circ2, dist);
+      }
+      circ1.pos = lastPos1.copy();
+    }
   }
 }
 
@@ -70,6 +131,11 @@ void repel(Circle circ1, Circle circ2, float dist) {
   circ1.applyForce(new PVector(cos(a) * force, sin(a) * force));
   circ2.applyForce(new PVector(cos(a + PI) * force, sin(a + PI) * force));
 }
+
+boolean closeEnough(Circle circ1, Circle circ2, float dist) {
+  return dist <= circ1.r + circ2.r + minDistance + 15;
+}
+
 
 /**boolean isValidMove(PVector pos, float r, ArrayList<Circle> circles){
  for(Circle circ2 : circles){
@@ -158,7 +224,7 @@ float distance(Circle circ1, Circle circ2) {
 
 void keyPressed() {
   if (key == 's') {
-    saveFrame("Circles-######.png");
+    saveFrame("CirclesFlow-######.png");
     System.out.println("saved");
   } else {
     setup();

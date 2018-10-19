@@ -9,16 +9,17 @@ public class WaveCircle {
   float ain;
   float noiseYInc = 1;
   float ampMult = 1;
+  int flatWaveLen = 100;
 
-  public WaveCircle(float x_, float y_, float r_, float xin, float yin) {
-    x = x_;
-    y = y_;
-    r = r_;
-    col = (color(255, 0, 0));
-    noiseX = random(-2, 2);
-    flat = new FlatWave(TWO_PI * r, .1, xin, yin);
-    ain = random(TWO_PI);
-  }
+  /** public WaveCircle(float x_, float y_, float r_, float xin, float yin) {
+   x = x_;
+   y = y_;
+   r = r_;
+   col = (color(255, 0, 0));
+   noiseX = random(-2, 2);
+   flat = new FlatWave(TWO_PI * r, .1, xin, yin);
+   ain = random(TWO_PI);
+   }**/
 
   public WaveCircle(float x_, float y_, float r_) {
     x = x_;
@@ -26,7 +27,7 @@ public class WaveCircle {
     r = r_;
     col = (color(255, 0, 0));
     noiseX = random(-2, 2);
-    flat = new FlatWave(PI * r, 310);
+    flat = new FlatWave(flatWaveLen, 50);
     ain = random(TWO_PI);
   }
 
@@ -47,7 +48,8 @@ public class WaveCircle {
     translate(x1, y1);
     int index = 0;
     beginShape();
-    for (float a = ain; a < TWO_PI + ain; a += 2 / r1) {
+    //for (float a = ain; a < TWO_PI + ain; a += 1 / r1) {
+    for (float a = ain; a <= TWO_PI + ain; a += TWO_PI / flatWaveLen) {
       float newR = 0;
       if (flat.points.size() > index) {
         newR = r1 + getWave(index);

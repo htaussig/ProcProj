@@ -49,10 +49,10 @@ public class Circle {
 
     int reX = 0;
     int reY = 0;
-    if (pos.x + r >= width) reX = -1;
-    if (pos.x - r <= 0) reX = 1;
-    if (pos.y + r >= height) reY = -1;
-    if (pos.y - r <= 0) reY = 1;
+    if (pos.x + r * (1 + ampMult) >= width) reX = -1;
+    if (pos.x - r * (1 + ampMult) <= 0) reX = 1;
+    if (pos.y + r * (1 + ampMult) >= height) reY = -1;
+    if (pos.y - r * (1 + ampMult) <= 0) reY = 1;
     reDisplay(reX, reY);
   }
 

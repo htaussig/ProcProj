@@ -1,3 +1,5 @@
+float ampMult = 1;
+
 public class WaveCircle {
   float x;
   float y; 
@@ -7,9 +9,8 @@ public class WaveCircle {
   float noiseX;
   color col;
   float ain;
-  float noiseYInc = 1;
-  float ampMult = 1;
-  int flatWaveLen = 100;
+  float noiseYInc = .11;
+  int flatWaveLen = 200;
 
   /** public WaveCircle(float x_, float y_, float r_, float xin, float yin) {
    x = x_;
@@ -27,7 +28,7 @@ public class WaveCircle {
     r = r_;
     col = (color(255, 0, 0));
     noiseX = random(-2, 2);
-    flat = new FlatWave(flatWaveLen, 50);
+    flat = new FlatWave(flatWaveLen, 38);
     ain = random(TWO_PI);
   }
 

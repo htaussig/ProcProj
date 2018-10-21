@@ -26,7 +26,13 @@ float zInc = 0.00082;
 float xin;
 float yin;
 
+int NOISEDET = 1;
+boolean RECORDING = false;
+int initialFrame = 0;
+
 void setup() {
+  noiseDetail(NOISEDET);
+
   size(800, 800);
   colorMode(HSB, 100);
   hue = random(100);
@@ -50,6 +56,11 @@ void draw() {
     circle.display();
   }
   //System.out.println(frameRate);
+
+  if (RECORDING) {
+    saveFrame("movie/WaveCirclesFlow-######.png");
+    text("seconds: " + ((frameCount - initialFrame) / frameRate), 0, 0);
+  }
 }
 
 void initFlowField() {
@@ -224,8 +235,11 @@ float distance(Circle circ1, Circle circ2) {
 
 void keyPressed() {
   if (key == 's') {
-    saveFrame("CirclesFlow-######.png");
+    saveFrame("pictures/WaveCirclesFlow-######.png");
     System.out.println("saved");
+  } else if (key == 'r') {
+    RECORDING = !RECORDING;
+    initialFrame = frameCount;
   } else {
     setup();
   }

@@ -59,7 +59,9 @@ void draw() {
 
   if (RECORDING) {
     saveFrame("movie/WaveCirclesFlow-######.png");
-    text("seconds: " + ((frameCount - initialFrame) / frameRate), 0, 0);
+    fill(255, 0, 0);
+    textSize(20);
+    text("seconds: " + ((frameCount - initialFrame) / frameRate), 15, 15);
   }
 }
 

@@ -1,10 +1,10 @@
 import java.util.*;
 
-int NUMSIDES = 3;
+int NUMSIDES = 2;
 
 ArrayList<Circle> circles;
 float minCircRadius = 85;
-float maxCircRadius = 90;
+float maxCircRadius = 120;
 float minDistance = 0;
 float colDeviation = 10;
 float colDeviationThird = 5;

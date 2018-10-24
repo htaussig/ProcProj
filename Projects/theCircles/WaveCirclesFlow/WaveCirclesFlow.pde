@@ -1,6 +1,6 @@
 ArrayList<Circle> circles;
 float minCircRadius = 7;
-float maxCircRadius = 40;
+float maxCircRadius = 45;
 float minDistance = 10;
 float colDeviation = 10;
 float colDeviationThird = 5;
@@ -36,7 +36,7 @@ void setup() {
   size(800, 800);
   colorMode(HSB, 100);
   hue = random(100);
-  sat = random(25, 100);
+  sat = random(80, 100);
   bri = random(50, 100);
   circles = new ArrayList<Circle>();
   nextCircle();
@@ -44,6 +44,7 @@ void setup() {
   initFlowField();
 
   backgroundCol = getBackgroundCol();
+  
 }
 
 void draw() {

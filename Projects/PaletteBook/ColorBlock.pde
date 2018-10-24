@@ -1,9 +1,9 @@
 public class ColorBlock{
   
   color col;
-  int size;
+  float size;
   
-  public ColorBlock(color col_, int size_){
+  public ColorBlock(color col_, float size_){
     col = col_;
     size = size_;
   }
@@ -11,14 +11,9 @@ public class ColorBlock{
   void display(float w, float h){
     fill(col);
     noStroke();
-    
-    rect(0, 0, w, h);
+    //stroke(1);
+    //System.out.println(hex(col));
+    rect(0, 0, w * size / 100, h);
   }
-  
-  void display(float x, float y, float w, float h){
-    fill(col);
-    noStroke();
-    
-    rect(x, y, w, h);
-  }
+
 }

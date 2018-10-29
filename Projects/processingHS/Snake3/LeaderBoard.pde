@@ -7,7 +7,7 @@ int trying = -20;
 ArrayList<String> highScores= new ArrayList<String>();
 
 private String fileName = "LeaderBoard.txt";
-  private String helperFile = "helper.txt";
+private String helperFile = "helper.txt";
 
 void drawNameScreen(){
 

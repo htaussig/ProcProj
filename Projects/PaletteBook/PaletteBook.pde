@@ -60,7 +60,7 @@ void instructionText() {
 
 void precondition(boolean b, String text) {
   if (!b) {
-    //System.out.println(text + "precondition failed ");
+    System.out.println(text + "precondition failed ");
     stop();
   }
 }

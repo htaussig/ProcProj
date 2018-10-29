@@ -58,7 +58,7 @@ boolean createCircles(int num) {
 
 color getCircColor() {
   float rNum = random(1);
-  if (rNum <= .75) {
+  if (rNum <= .8) {
     float tempHue = hue + random(-colDeviation, colDeviation);
     return color(tempHue, sat, bri);
   } else {

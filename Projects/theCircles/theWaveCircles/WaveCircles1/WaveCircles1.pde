@@ -25,12 +25,12 @@ void draw() {
   background(0);
   strokeWeight(2);
   
-  /**flat.addNoiseY(1);
+  flat.addNoiseY(1);
   flat.addNoiseX(1);
-  flat.display();**/
+  flat.display();
   
   for(WaveCircle circ : circles){
-    circ.display();
+    //circ.display();
   }
 }
 

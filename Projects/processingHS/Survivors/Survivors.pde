@@ -11,7 +11,7 @@
 
 float arenaWidth = 800;
 boolean gameOver = false;
-int numTeams = 4;
+int numTeams = 2;
 int numVehicles = 400;
 
 CheckBox debugBox = new CheckBox(4, 4);
@@ -34,7 +34,7 @@ void setup() {
   size(1200, 800);
   frameRate(60);
   seed = (long) random(-1000000000, 1000000000);
-  randomSeed(-831283456);
+  //randomSeed(-831283456);
   for (int i = 0; i < popsNow.length; i++) {
     popsNow[i] = 0.0;
   }

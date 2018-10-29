@@ -4,7 +4,7 @@ int NUMSIDES = 2;
 
 ArrayList<Circle> circles;
 float minCircRadius = 85;
-float maxCircRadius = 120;
+float maxCircRadius = 110;
 float minDistance = 0;
 float colDeviation = 10;
 float colDeviationThird = 5;
@@ -14,15 +14,25 @@ float hue;
 float sat;
 float bri;
 
+boolean palInUse;
+Palette pal = null;  
+
 void setup() {
   size(800, 800);
-  colorMode(HSB, 99);
-  hue = random(99);
-  bri = random(35, 99);;
-  sat = random(min(119 - bri, 99), 99);
-  
-  
-  
+
+  palInUse = false;
+  if (pal != null) {
+    palInUse = true;
+  }
+
+  if (!palInUse) {
+    colorMode(HSB, 99);
+    hue = random(99);
+    bri = random(35, 99);
+    sat = random(min(119 - bri, 99), 99);
+  }
+
+
   circles = new ArrayList<Circle>();
   nextCircle();
 
@@ -87,8 +97,13 @@ boolean createCircles(int num) {
   float x = random(width); 
   float y = random(height);
   float r = random(minCircRadius, maxCircRadius);
-  float[] col = getCircColor();
-  Circle newCirc = new Circle(x, y, r, col);
+  Circle newCirc;
+  if (palInUse) {
+    newCirc = new Circle(x, y, r, pal.getColor());
+  } else {
+    float[] col = getCircColor();
+    newCirc = new Circle(x, y, r, col);
+  }
 
   for (Circle circle : circles) {
     if (circlesOverlap(newCirc, circle)) {
@@ -123,6 +138,15 @@ float[] getCircColor() {
 }
 
 color getBackgroundCol() {
+  if (palInUse) {
+    float rNum = random(1);
+    if(rNum < .5){
+      return lerpColor(pal.getColor(), color(255), random(1));
+    }
+    else{
+      return lerpColor(pal.getColor(), color(0), random(1));
+    }    
+  }
   float bHue = hue + random(-colDeviationBack, colDeviationBack);
   float rNum = random(1);
   if (rNum <= .66) {

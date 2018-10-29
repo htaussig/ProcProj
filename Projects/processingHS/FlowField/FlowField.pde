@@ -6,7 +6,7 @@ ArrayList<Particle> particles = new ArrayList<Particle>();
 PVector[] flowField;
 ArrayList<Integer> colors = new ArrayList<Integer>();
 float colIndex = 0;
-private static int NUMCOLS = 3;
+private static int NUMCOLS = 2;
 private static float COLINC = .0015;
 
 void setup(){
@@ -23,13 +23,13 @@ void setup(){
     //colors.add(color(random(255), random(255), random(255), 2));
     colors.add(color(random(255), 125, 255, 2));
   }*/
-  colors.add(color(39, 92, 97, 5));
-  colors.add(color(241, 92, 97, 5));
+  colors.add(color(117, 2, 242, 5));
+  colors.add(color(176, 98, 94, 5));
   //smooth(8);
 }
 
 void draw(){
-  //background(255);
+  //background(0);
   float yoff = 0;
   for(int y = 0; y < rows; y++){
     float xoff = 0;
@@ -40,13 +40,14 @@ void draw(){
       v.setMag(.07);
       flowField[index] = v;
       xoff += inc;
-      /*stroke(0, 50);
+      /**stroke(0, 50);
       pushMatrix();
         translate(x * scl, y * scl);
         rotate(v.heading());
         strokeWeight(1);
+        stroke(255);
         line(0, 0, scl, 0);
-      popMatrix();*/
+      popMatrix();**/
     }
     yoff += inc;
   }

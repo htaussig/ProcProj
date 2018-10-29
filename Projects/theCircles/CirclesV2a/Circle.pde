@@ -28,7 +28,6 @@ public class Circle {
     translate(x, y);
 
     for (float r = 1; r < drawR; r += 1) {
-      float diameter = TWO_PI * r;
       float start = random(TWO_PI);
       //float dA = 16 * 2 * PI / diameter;
       float numIterations = 5 * drawR;

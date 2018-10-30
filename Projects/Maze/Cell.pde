@@ -2,12 +2,17 @@ public class Cell {
   float x, y;
   boolean pathed;
   boolean checked;
+  ArrayList<Cell> connectedCells;
   public Cell(float x_, float y_) {
     x = x_;
     y = y_;
     pathed = false;
+    connectedCells = new ArrayList<Cell>();
   }
 
+  public void addConCell(Cell cell){
+    connectedCells.add(cell);
+  }
 
   public void display() {
     //fill(255);
@@ -28,5 +33,11 @@ public class Cell {
     }
     //ellipse(0, 0, cellD, cellD);
     popMatrix();
+    
+    drawPaths();
+  }
+  
+  void drawPaths(){
+    
   }
 }

@@ -38,7 +38,7 @@ void draw() {
   }
 
   System.out.println(shapes.size());
-  //endRecord();
+  endRecord();
 }
 
 void keyPressed(){

@@ -1,6 +1,6 @@
 int NUMSIDES = 4;
 float DA = TWO_PI / NUMSIDES;
-float cellD = 40;
+float cellD = 30;
 float cellDist = cellD * sqrt(2);
 ArrayList<Cell> maze = new ArrayList<Cell>();
 ArrayList<Path> paths = new ArrayList<Path>();
@@ -69,6 +69,8 @@ boolean genPath(Cell cell) {
         Path maybPath = new Path(newX, newY, a);
         if (causesNoLoops(neighbor, cell)) {
           //System.out.println("new path");
+          cell.addConCell(neighbor);
+          neighbor.addConCell(cell);
           addPath(maybPath);
           cell.pathed = true;
           return true;
@@ -80,50 +82,25 @@ boolean genPath(Cell cell) {
 }
 
 boolean causesNoLoops(Cell end, Cell start) {
-  System.out.println("//////////");
-  ArrayList<Cell> cur = new ArrayList<Cell>();
-  ArrayList<Cell> next = new ArrayList<Cell>();
   for (Cell cell : maze) {
-    cell.checked = false;
+    cell.pathed = false;
   }
-  start.checked = true;
-  next.add(start);
-  int i = 0;
-  while (i < 3) {
-    cur.clear();
-    for (Cell cell : next) {
-      cur.add(cell);
-    }
-    next.clear();
-    for (Cell cell : cur) {
-      //not sure this works
-      //cur.remove(cell);
-      for (float a = 0; a < TWO_PI - .1; a += DA) {
-        if (isPath(cell, a)) {
-          //System.out.println("isPath(cell, a) = true");
-          //could override the getCell function for more concise code
-          Cell nxtCell = getCell(cell.x + (cos(a) * cellDist), cell.y + (sin(a) * cellDist / 2));
-          System.out.println(nxtCell != null);
-          if (nxtCell != null && nxtCell.checked == false) {
-            if (nxtCell == end) {
-              System.out.println("nxtCell == end");
-              return false;
-            } else {
-              nxtCell.checked = true;
-              next.add(nxtCell);
-            }
-          }
-        }
-      }
-    }
-    //System.out.println(next.size());
-    if (cur.size() == next.size()) {
-      i++;
-    } else {
-      i = 0;
-    }
-  }
+  start.pathed = true;
+  return theLoop(start.connectedCells, end);
+}
 
+
+boolean theLoop(ArrayList<Cell> children, Cell end) {
+  for (Cell cell : children) {
+    if (cell == end) {
+      //System.out.println("yeah");
+      return false;
+    }
+    if (cell.pathed == false) {
+      cell.pathed = true;
+      return theLoop(cell.connectedCells, end);
+    }
+  }
   return true;
 }
 

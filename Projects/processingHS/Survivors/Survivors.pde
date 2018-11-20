@@ -28,6 +28,9 @@ Graph popGraph;
 //this seed does not work on the PVector.random2D() calls
 long seed;
 
+boolean RECORDING = false;
+int initialFrame = 0;
+
 //4-player = -831283456
 
 void setup() {
@@ -215,6 +218,13 @@ void draw() {
   rect(arenaWidth, -1, width - arenaWidth, height);
 
   popGraph.display();
+  
+  if (RECORDING) {
+    saveFrame("movie/WaveCirclesFlow-######.png");
+    fill(255, 0, 0);
+    textSize(20);
+    text("seconds: " + ((frameCount - initialFrame) / frameRate), 15, 15);
+  }
 }
 
 void mouseDragged() {
@@ -240,4 +250,8 @@ void mouseClicked() {
 
 void keyPressed() {
   System.out.println("The seed for this run was: " + seed);
+  if (key == 'r') {
+    RECORDING = !RECORDING;
+    initialFrame = frameCount;
+  }
 }

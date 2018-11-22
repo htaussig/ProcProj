@@ -1,3 +1,6 @@
 # ProcProj
 My Processing Sketches
-heck yeah dood, committing from desktop
+
+Gallery contains some of my favorite screenshots from these sketches, while allPictures has the rest
+
+ProcessingHS has all of my sketches from high school

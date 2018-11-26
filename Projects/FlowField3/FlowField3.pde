@@ -7,9 +7,9 @@ ArrayList<Integer> colors = new ArrayList<Integer>();
 float colIndex = 0;
 
 //put a seed here, otherwise a seed will be generated randomly
-long seed = 0;
+long seed = -130454;
 
-private static int NUMCOLS = 2;
+//private static int NUMCOLS = 2;
 private static float COLINC = .0015;
 
 float forceMag = .0125;
@@ -20,12 +20,12 @@ float zoff = 0;
 float zInc = 0.00023;
 float scl = 10;
 
-float opacity = 5;
-color backCol = color(255);
+float opacity = 2;
+color backCol = color(0);
 
-float WALLFORCE = .000000014 / forceMag;
-float SPECIALFORCE = .04;
-float numParticles = 15000;
+float WALLFORCE = .000000010 / forceMag;
+float SPECIALFORCE = .07;
+float numParticles = 12000;
 
 float angleMult;
 
@@ -38,8 +38,13 @@ int LIN = 2;
 
 int mode = REG;
 
+//for highResolution output
+PGraphics hires;
+int scaleFactor = 2;
+boolean recording = false;
+
 void setup() { 
-  size(1600, 900, P2D);
+  size(1920, 1080, P2D);
   colorMode(HSB, 255, 100, 100);
   background(backCol);
 
@@ -63,10 +68,14 @@ void setup() {
   //change the colors here in order to change the flowfield gradient
   pushStyle();
   colorMode(HSB, 359, 99, 99);
-  colors.add(color(0, 0, 80, opacity));
-  colors.add(color(0, 0, 8, opacity));
+  
+  colors.add(color(0, 99, 99, opacity));
+  colors.add(color(0, 69, 89, opacity));
+  colors.add(color(0, 99, 99, opacity));
+  colors.add(color(0, 99, 19, opacity));
   //colors.add(color(189, 99, 99, opacity));
   //colors.add(color(300, 99, 99, opacity));
+  //colors.add(color(0, 0, 8, opacity));
   popStyle();
 
   /**purple blue white
@@ -77,7 +86,22 @@ void setup() {
   genSpecialForce();
 }
 
+
+void genSpecialForce() {
+  for (int i = 0; i < specialField.length; i++) {
+    specialField[i] = new PVector(0, 0);
+  }
+
+  //specialForceLine(100, 100, 900, 200);
+  specialForceGon(width / 2, height / 2, 450, 8, PI / 8);
+  diluteField();
+}
+
 void draw() {
+  if(recording){
+    hires.scale(scaleFactor);
+  }
+    
   if (opacity == 255 || mode > 0) {
     background(backCol);
   }
@@ -86,14 +110,12 @@ void draw() {
     float xoff = 0;
     for (int x = 0; x < cols; x++) {
       float angle = noise(xoff, yoff, zoff) * TWO_PI * angleMult;
-      PVector v = PVector.fromAngle(angle);
-      
+      PVector v = PVector.fromAngle(angle);    
       //PVector v = new PVector(0, 0);
-      
       int index = (int) (x + (y * cols));
       addWallForce(index, v);
       v.setMag(forceMag);
-      //addSpecialForce(index, v);
+      addSpecialForce(index, v);
       flowField[index] = v;
       xoff += inc;
       if (mode == LIN) {
@@ -123,31 +145,44 @@ void addSpecialForce(int index, PVector v) {
   v.add(specialField[index]);
 }
 
-void genSpecialForce() {
-  for (int y = 0; y < rows; y++) {
-    for (int x = 0; x < cols; x++) {
-      int index = (int) (x + (y * cols));
-      specialField[index] = getSpecialForce(x, y);
+void specialForceGon(float x, float y, float r, int numSides, float aIn) {
+  float a = aIn;
+  float da = TWO_PI / numSides;
+
+  for (int i = 0; i < numSides; i++) {
+    //System.out.println(i);
+    float nextA = a + da;
+    specialForceLine(x + cos(a) * r, y + sin(a) * r, x + cos(nextA) * r, y + sin(nextA) * r);
+    a = nextA;
+  }
+}
+
+/**@ Override void line(float x1, float x2, float y1, float y2) {
+ specialForceLine(x1, x2, y1, y2);
+ }**/
+
+void specialForceLine(float x1, float y1, float x2, float y2) {
+
+  PVector v = new PVector(x2 - x1, y2 - y1).setMag(SPECIALFORCE);
+
+  PVector d = new PVector(x2 - x1, y2 - y1).setMag(1);
+
+  //int i = 0;
+  while (true) {
+    setSpecial(x1, y1, v);
+    x1 += d.x;
+    y1 += d.y;
+    if (abs(x1 - x2) < 1 && abs(y1 - y2) < 1) {
+      break;
     }
   }
 }
 
-PVector getSpecialForce(float x, float y) {
-  x *= scl;
-  y *= scl;
-
-  float dx = (width / 2) - x;
-  float dy = (height / 2) - y;
-  float d = sqrt(dx * dx + dy * dy);
-  float a = new PVector(x - width / 2, y - height / 2).heading() - PI / 2;
-
-  float dist = abs(d - 180);
-  if (dist < 180) {
-    dist = map(dist, 0, 180, 1, 0);
-    dist *= dist;
-    return PVector.fromAngle(a).mult(SPECIALFORCE * dist);
-  }
-  return new PVector(0, 0);
+void setSpecial(float x, float y, PVector v) {
+  x = (int) (x / scl);
+  y = (int) (y / scl);
+  int index = (int) (x + (y * cols));
+  specialField[index] = v;
 }
 
 void addWallForce(int index, PVector v) {
@@ -175,13 +210,13 @@ PVector getWallForce(float x, float y) {
 }
 
 void seedStuff() {
-  System.out.println(seed);
   if (seed == 0) {
     seed = (long) random(-1000000, 1000000);
   }
   randomSeed(seed);
   noiseSeed(seed);
   //could there be a problem with using the same variable?
+  System.out.println("seed" + seed);
 }
 
 void diluteField() {
@@ -189,10 +224,10 @@ void diluteField() {
   for (int y = 0; y < rows; y++) {
     for (int x = 0; x < cols; x++) {
       int index = (int) (x + (y * cols));
-      newField[index] = getAverageField(x, y);
+      newField[index] = getAverageField(x, y).setMag(SPECIALFORCE);
     }
   }
-  
+
   specialField = newField;
 }
 
@@ -203,16 +238,16 @@ PVector getAverageField(int x, int y) {
     for (int xAdd = -1; xAdd < 2; xAdd++) {
       int tempX = x + xAdd;
       int tempY = y + yAdd;
-      if(tempY >= rows){
+      if (tempY >= rows) {
         tempY %= rows;
       }
-      if(tempX >= cols){
+      if (tempX >= cols) {
         tempX %= cols;
       }
-      if(tempX < 0){
+      if (tempX < 0) {
         tempX += cols;
       }
-      if(tempY < 0){
+      if (tempY < 0) {
         tempY += rows;
       }
       int index = (int) (tempX + (tempY * cols));
@@ -222,6 +257,7 @@ PVector getAverageField(int x, int y) {
   v.setMag(forceMag);
   return v;
 }
+
 
 void keyPressed() {
   if (key ==  's') {
@@ -235,6 +271,26 @@ void keyPressed() {
   } else if (key == 'l') {
     System.out.println("diluting");
     diluteField();
+  } else if (key == 'r') {
+    if (!recording) {
+      hires = createGraphics(
+        width * scaleFactor, 
+        height * scaleFactor, 
+        JAVA2D);
+      println("Generating high-resolution image...");
+
+      beginRecord(hires);
+     
+      hires.scale(scaleFactor);
+      background(backCol);
+        
+      recording = true;
+    } else {
+      endRecord();
+
+      hires.save("FlowField3 " + seed + "-highres.png");
+      println("Finished");
+    }
   } else {
     background(backCol);
   }

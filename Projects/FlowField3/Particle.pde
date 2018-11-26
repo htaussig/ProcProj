@@ -71,7 +71,8 @@ public class Particle {
     //System.out.println(h);
     //strokeWeight(2);
     if(mode == REG){
-      point(pos.x, pos.y);
+      //point(pos.x, pos.y);
+      line(pos.x, pos.y, prevPos.x, prevPos.y);
     }
     else if (mode == PAR) {
       line(pos.x, pos.y, prevPos.x, prevPos.y);

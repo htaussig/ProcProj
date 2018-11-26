@@ -7,7 +7,7 @@ ArrayList<Integer> colors = new ArrayList<Integer>();
 float colIndex = 0;
 
 //put a seed here, otherwise a seed will be generated randomly
-long seed = -130454;
+long seed = 0;
 
 //private static int NUMCOLS = 2;
 private static float COLINC = .0015;
@@ -68,19 +68,30 @@ void setup() {
   //change the colors here in order to change the flowfield gradient
   pushStyle();
   colorMode(HSB, 359, 99, 99);
-  
-  colors.add(color(0, 99, 99, opacity));
-  colors.add(color(0, 69, 89, opacity));
-  colors.add(color(0, 99, 99, opacity));
-  colors.add(color(0, 99, 19, opacity));
+
+
   //colors.add(color(189, 99, 99, opacity));
   //colors.add(color(300, 99, 99, opacity));
   //colors.add(color(0, 0, 8, opacity));
   popStyle();
+  colors.add(color(178, 99, 99, opacity));
+  colors.add(color(131, 99, 99, opacity));
+  //colors.add(color(165, 0, 99, opacity));
+  
+  
 
   /**purple blue white
    colors.add(color(117, 2, 242, opacity));
    colors.add(color(176, 98, 94, opacity));**/
+
+  /** red white red   
+   colors.add(color(0, 99, 99, opacity));
+   colors.add(color(0, 69, 89, opacity));
+   colors.add(color(0, 99, 99, opacity));
+   colors.add(color(0, 99, 19, opacity));   
+   **/
+
+  createCircles();
 
   genWallForce();
   genSpecialForce();
@@ -93,15 +104,17 @@ void genSpecialForce() {
   }
 
   //specialForceLine(100, 100, 900, 200);
-  specialForceGon(width / 2, height / 2, 450, 8, PI / 8);
+  for(Circle circle : circles){
+    circle.specialForceCircle();
+  }  
   diluteField();
 }
 
 void draw() {
-  if(recording){
+  if (recording) {
     hires.scale(scaleFactor);
   }
-    
+
   if (opacity == 255 || mode > 0) {
     background(backCol);
   }
@@ -182,7 +195,9 @@ void setSpecial(float x, float y, PVector v) {
   x = (int) (x / scl);
   y = (int) (y / scl);
   int index = (int) (x + (y * cols));
-  specialField[index] = v;
+  if(!(index < 0 || index >= specialField.length)){
+    specialField[index] = v;
+  }
 }
 
 void addWallForce(int index, PVector v) {
@@ -280,10 +295,10 @@ void keyPressed() {
       println("Generating high-resolution image...");
 
       beginRecord(hires);
-     
+
       hires.scale(scaleFactor);
       background(backCol);
-        
+
       recording = true;
     } else {
       endRecord();

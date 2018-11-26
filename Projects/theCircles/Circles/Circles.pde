@@ -1,6 +1,6 @@
 ArrayList<Circle> circles;
-float minCircRadius = 5;
-float maxCircRadius = 80;
+float minCircRadius = 25;
+float maxCircRadius = 140;
 float minDistance = 9;
 float colDeviation = 10;
 float colDeviationThird = 5;

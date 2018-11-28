@@ -6,8 +6,8 @@ PVector[] specialField;
 ArrayList<Integer> colors = new ArrayList<Integer>();
 float colIndex = 0;
 
-//put a seed here, otherwise a seed will be generated randomly
-long seed = -631389;
+//put a seed here, otherwise a seed will be generated randomly (if set to 0)
+long seed = 0;
 
 //private static int NUMCOLS = 2;
 private static float COLINC = .0015;
@@ -45,6 +45,9 @@ boolean recording = true;
 
 void setup() { 
   size(1920, 1080, P2D);
+  if (recording == true) {
+    startRecord();
+  }
   colorMode(HSB, 359, 99, 99);
   background(backCol);
 
@@ -68,17 +71,11 @@ void setup() {
   //change the colors here in order to change the flowfield gradient
   pushStyle();
   colorMode(HSB, 359, 99, 99);
-
-
-  //colors.add(color(189, 99, 99, opacity));
-  //colors.add(color(300, 99, 99, opacity));
-  //colors.add(color(0, 0, 8, opacity));
   popStyle();
-  colors.add(color(0, 99, 99, opacity));
-  colors.add(color(0, 69, 89, opacity));
-  colors.add(color(0, 99, 99, opacity));
-  colors.add(color(0, 99, 19, opacity)); 
-  //colors.add(color(165, 0, 99, opacity));
+
+  colors.add(color(112, 99, 99, opacity));
+  colors.add(color(181, 99, 99, opacity));
+  
 
 
 
@@ -98,9 +95,7 @@ void setup() {
   genWallForce();
   genSpecialForce();
 
-  if (recording == true) {
-    startRecord();
-  }
+  smooth(3);
 }
 
 

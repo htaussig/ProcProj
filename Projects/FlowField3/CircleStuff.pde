@@ -1,9 +1,9 @@
 ArrayList<Circle> circles;
-float minCircRadius = 70;
-float maxCircRadius = 300;
-float minDistance = 60;
+float minCircRadius = 55;
+float maxCircRadius = 310;
+float minDistance = 68;
 
-int CIRCSIDES = 8;
+int CIRCSIDES = 3;
 
 void createCircles() {
   circles = new ArrayList<Circle>();
@@ -16,7 +16,7 @@ void nextCircle() {
 }
 
 boolean createCircles(int num) {
-  if (num >= 1000) {
+  if (num >= 700) {
     return false;
   }
 

@@ -1,9 +1,9 @@
 ArrayList<Circle> circles;
-float minCircRadius = 45;
-float maxCircRadius = 180;
-float minDistance = 50;
+float minCircRadius = 70;
+float maxCircRadius = 300;
+float minDistance = 60;
 
-int CIRCSIDES = 4;
+int CIRCSIDES = 8;
 
 void createCircles() {
   circles = new ArrayList<Circle>();

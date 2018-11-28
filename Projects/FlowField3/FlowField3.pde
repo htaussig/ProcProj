@@ -7,7 +7,7 @@ ArrayList<Integer> colors = new ArrayList<Integer>();
 float colIndex = 0;
 
 //put a seed here, otherwise a seed will be generated randomly
-long seed = 0;
+long seed = -631389;
 
 //private static int NUMCOLS = 2;
 private static float COLINC = .0015;
@@ -18,14 +18,14 @@ float maxSpeed = 1;
 float inc = 0.055;
 float zoff = 0;
 float zInc = 0.00023;
-float scl = 10;
+float scl = 9;
 
 float opacity = 2;
 color backCol = color(0);
 
 float WALLFORCE = .000000010 / forceMag;
-float SPECIALFORCE = .07;
-float numParticles = 12000;
+float SPECIALFORCE = .07 * 3.2;
+float numParticles = 11000;
 
 float angleMult;
 
@@ -41,11 +41,11 @@ int mode = REG;
 //for highResolution output
 PGraphics hires;
 int scaleFactor = 2;
-boolean recording = false;
+boolean recording = true;
 
 void setup() { 
   size(1920, 1080, P2D);
-  colorMode(HSB, 255, 100, 100);
+  colorMode(HSB, 359, 99, 99);
   background(backCol);
 
   seedStuff();
@@ -74,11 +74,13 @@ void setup() {
   //colors.add(color(300, 99, 99, opacity));
   //colors.add(color(0, 0, 8, opacity));
   popStyle();
-  colors.add(color(178, 99, 99, opacity));
-  colors.add(color(131, 99, 99, opacity));
+  colors.add(color(0, 99, 99, opacity));
+  colors.add(color(0, 69, 89, opacity));
+  colors.add(color(0, 99, 99, opacity));
+  colors.add(color(0, 99, 19, opacity)); 
   //colors.add(color(165, 0, 99, opacity));
-  
-  
+
+
 
   /**purple blue white
    colors.add(color(117, 2, 242, opacity));
@@ -95,6 +97,10 @@ void setup() {
 
   genWallForce();
   genSpecialForce();
+
+  if (recording == true) {
+    startRecord();
+  }
 }
 
 
@@ -104,16 +110,19 @@ void genSpecialForce() {
   }
 
   //specialForceLine(100, 100, 900, 200);
-  for(Circle circle : circles){
+  for (Circle circle : circles) {
     circle.specialForceCircle();
   }  
-  diluteField();
+  //diluteField();
 }
 
 void draw() {
   if (recording) {
     hires.scale(scaleFactor);
   }
+
+
+  colorMode(HSB, 359, 99, 99);
 
   if (opacity == 255 || mode > 0) {
     background(backCol);
@@ -162,9 +171,20 @@ void specialForceGon(float x, float y, float r, int numSides, float aIn) {
   float a = aIn;
   float da = TWO_PI / numSides;
 
+  boolean clockwise = true;
+
+  if (random(1) < .5) {
+    clockwise = false;
+  }
+
   for (int i = 0; i < numSides; i++) {
     //System.out.println(i);
-    float nextA = a + da;
+    float nextA;
+    if (clockwise) {
+      nextA = a + da;
+    } else {
+      nextA = a - da;
+    }
     specialForceLine(x + cos(a) * r, y + sin(a) * r, x + cos(nextA) * r, y + sin(nextA) * r);
     a = nextA;
   }
@@ -195,7 +215,7 @@ void setSpecial(float x, float y, PVector v) {
   x = (int) (x / scl);
   y = (int) (y / scl);
   int index = (int) (x + (y * cols));
-  if(!(index < 0 || index >= specialField.length)){
+  if (!(index < 0 || index >= specialField.length)) {
     specialField[index] = v;
   }
 }
@@ -273,6 +293,20 @@ PVector getAverageField(int x, int y) {
   return v;
 }
 
+void startRecord() {
+  hires = createGraphics(
+    width * scaleFactor, 
+    height * scaleFactor, 
+    JAVA2D);
+  println("Generating high-resolution image...");
+
+  beginRecord(hires);
+
+  hires.scale(scaleFactor);
+  background(backCol);
+
+  recording = true;
+}
 
 void keyPressed() {
   if (key ==  's') {
@@ -288,22 +322,12 @@ void keyPressed() {
     diluteField();
   } else if (key == 'r') {
     if (!recording) {
-      hires = createGraphics(
-        width * scaleFactor, 
-        height * scaleFactor, 
-        JAVA2D);
-      println("Generating high-resolution image...");
-
-      beginRecord(hires);
-
-      hires.scale(scaleFactor);
-      background(backCol);
-
-      recording = true;
+      startRecord();
     } else {
+      recording = false;
       endRecord();
 
-      hires.save("FlowField3 " + seed + "-highres.png");
+      hires.save("FlowField3s: " + seed + " f: " + frameCount + "highres.png");
       println("Finished");
     }
   } else {

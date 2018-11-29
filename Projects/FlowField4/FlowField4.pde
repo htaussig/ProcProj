@@ -41,7 +41,7 @@ int mode = REG;
 //for highResolution output
 PGraphics hires;
 int scaleFactor = 2;
-boolean recording = false;
+boolean recording = true;
 
 void setup() { 
   size(1920, 1080, P2D);

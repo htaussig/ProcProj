@@ -139,22 +139,6 @@ int getAvgLifeSpan() {
 void draw() {
   background(42);
 
-  /*if (random(1) < .16) {
-   addOneFood();
-   }
-   
-   if (random(1) < .032) {
-   addOnePoison();
-   }
-   
-   drawFood();
-   drawPoison();*/
-
-  /*vehiclesPos.clear();
-   for (int j = 0; j < vehicles.size(); j++) {
-   vehiclesPos.add(vehicles.get(j).position);
-   }*/
-
   displayTeams();
   // Call the appropriate steering behaviors for our agents
   for (int i = vehicles.size() - 1; i >= 0; i--) {
@@ -235,12 +219,20 @@ void displayTeams(){
 }
 
 void displayTeamShape(ArrayList<Vehicle> vs){
+  
+  Vehicle v = vs.get(0);
+  
+  displayAshape(vs);
+  
+}
+
+void displayAshape(ArrayList<Vehicle> vs){
   beginShape(TRIANGLE_STRIP);
-  Vehicle last = vs.get(0);
-  for(int i = 1; i < vs.size(); i++){
+  //Vehicle last = vs.get(0);
+  for(int i = 0; i < vs.size(); i++){
     Vehicle v = vs.get(i);
     vertex(v.position.x, v.position.y);
-    last = v;
+    //last = v;
   }
   endShape();
 }

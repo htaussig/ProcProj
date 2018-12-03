@@ -2,7 +2,7 @@ float pointD = 5;
 float col = 0;
 float border = 105;
 
-float minCircRadius = 5;
+float minCircRadius = 10;
 float maxCircRadius = 20;
 float minDistance = 3;
 

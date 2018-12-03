@@ -11,7 +11,7 @@
 
 float arenaWidth = 800;
 boolean gameOver = false;
-int numTeams = 2;
+int numTeams = 4;
 int numVehicles = 400;
 
 CheckBox debugBox = new CheckBox(4, 4);
@@ -28,7 +28,7 @@ Graph popGraph;
 //this seed does not work on the PVector.random2D() calls
 long seed;
 
-boolean RECORDING = false;
+boolean RECORDING = true;
 int initialFrame = 0;
 
 //4-player = -831283456
@@ -37,7 +37,7 @@ void setup() {
   size(1200, 800);
   frameRate(60);
   seed = (long) random(-1000000000, 1000000000);
-  //randomSeed(-831283456);
+  randomSeed(-831283456);
   for (int i = 0; i < popsNow.length; i++) {
     popsNow[i] = 0.0;
   }
@@ -221,9 +221,9 @@ void draw() {
   
   if (RECORDING) {
     saveFrame("movie/WaveCirclesFlow-######.png");
-    fill(255, 0, 0);
-    textSize(20);
-    text("seconds: " + ((frameCount - initialFrame) / frameRate), 15, 15);
+    //fill(255, 0, 0);
+    //textSize(20);
+    //text("seconds: " + ((frameCount - initialFrame) / frameRate), 15, 15);
   }
 }
 

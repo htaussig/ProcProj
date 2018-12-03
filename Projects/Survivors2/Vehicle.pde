@@ -31,8 +31,10 @@ class Vehicle {
   int team = 0;
   int killCounter = 0;
 
+
   Vehicle(float x, float y) {
     position = new PVector(x, y);
+    
     velocity = getRandom2D().setMag(random(maxspeed/2, maxspeed));
     //velocity = new PVector(0, 0);
 

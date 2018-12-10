@@ -11,6 +11,10 @@ public class Vertex{
     this(new PVector(x, y, z), col_);
   }
   
+  public Vertex(float x, float y, float z){
+    this(new PVector(x, y, z), color(random(255), random(255), random(255), opacity));
+  }
+  
   PVector getPos(){
    return pos; 
   }
@@ -23,7 +27,13 @@ public class Vertex{
     fill(col);
     pushMatrix();
     translate(pos.x, pos.y, pos.z);
-    sphere(sphereD);
+    rotateZ(radians(45));
+    if(DRAWMODE == drawCUBE){
+      box(diam);
+    }
+    else if(DRAWMODE == drawSPHERE){
+      sphere(diam);
+    }
     popMatrix();
   }
 }

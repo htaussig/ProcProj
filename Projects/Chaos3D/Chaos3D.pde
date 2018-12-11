@@ -7,7 +7,7 @@
 import peasy.*;
 
 PeasyCam cam;
-int distance = 450;
+int distance = 480;
 
 ArrayList<Vertex> p;
 float x0, y0, a, h, H;
@@ -21,16 +21,22 @@ PVector drawer;
 float myFrameCount = 0;
 
 float diam = 17.3;
-float opacity = 205;
+float opacity = 255;
 
 //for the vertices
 //final float vertexSize = 12;
 
-final int numIterations = 100;
+//number of shapes per iteration
+int speed = 400;
+int numIterations = 10;
 
 final boolean canBeSame = true;
 
 float prev = -1;
+
+Palette pal = new Palette("37#12E6C826#A287F417#41414117#000000");
+
+
 
 //the 5 platonic solids
 //dodecahedron is hard
@@ -75,7 +81,7 @@ void refresh() {
     ortho();
   }
 
-  sphereDetail(8);
+  sphereDetail(10);
   noStroke();
 
   p.clear();
@@ -111,7 +117,7 @@ void addPoints() {
 void tetraSettings() {
   DRAWMODE = drawSPHERE;
   lerpPercent = .5;
-  diam = 17.3;
+  diam = 7.3;
 
   //float r = 200;
 
@@ -202,16 +208,17 @@ float getLerpPercent() {
 }
 
 void draw() {
-  background(51);
+  background(35);
 
   lights();
 
   //spotLight(255,255,255, 1000, 1000, 1000, -1, -1, -1, radians(1), 600);
 
   directionalLight(128, 128, 128, 1000, 1000, 1000);
+  directionalLight(100, 100, 100, -1000, -1000, 1000);
   directionalLight(25, 25, 25, -1000, -1000, 0);
 
-  if (myFrameCount++ < 500) {
+  if (myFrameCount++ < speed) {
     for (int k = 0; k < numIterations; k++) {
       int r = floor(random(p.size()));
       if (canBeSame || r != prev) {
@@ -247,12 +254,12 @@ void draw() {
 }
 
 color getColor(int num) {
-  return p.get(num).getColor();
+  return pal.getColor();
 }
 
 void drawVertices() {
   for (Vertex v : p) {
-    v.display();
+    //v.display();
   }
 }
 
@@ -269,6 +276,13 @@ void drawPoints(ArrayList<PVector> points, color c) {
 void keyPressed() {
   if (key - '0' >= CUBE && key - '0' <= TETRA) {
     MODE = key - '0';
+    refresh();
   }
-  refresh();
+  else if(key == 's'){
+    saveFrame("Chaos3D-######.png");
+    System.out.println("Frame saved");
+  }
+  else{
+    refresh();
+  }
 }

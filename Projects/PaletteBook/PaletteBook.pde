@@ -16,7 +16,7 @@ private String fileName = "paletteBook.txt";
 private String helperFile = "helper.txt";
 
 void setup() {
-  size(800, 800);
+  size(800, 1140);
   backGCol = color(255);
   palettes = new ArrayList<Palette>();
 

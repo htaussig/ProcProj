@@ -7,10 +7,9 @@
 import peasy.*;
 
 PeasyCam cam;
-int distance = 480;
+int distance = 450;
 
 ArrayList<Vertex> p;
-float x0, y0, a, h, H;
 
 ArrayList<Vertex> points;
 
@@ -20,23 +19,25 @@ PVector drawer;
 
 float myFrameCount = 0;
 
-float diam = 17.3;
+float diam = 20.3;
 float opacity = 255;
 
 //for the vertices
 //final float vertexSize = 12;
 
 //number of shapes per iteration
-int speed = 400;
-int numIterations = 10;
+int speed = 1700;
+int numIterations = 3;
 
 final boolean canBeSame = true;
 
 float prev = -1;
+float rA = 0;
 
-Palette pal = new Palette("37#12E6C826#A287F417#41414117#000000");
+//can use my PalletteBook Sketch, click on the pallettes, and copy them in here
+Palette pal = new Palette("37#7A08FA26#A82FFC17#C264FE17#F8ECFD");
 
-
+//float a = 0;
 
 //the 5 platonic solids
 //dodecahedron is hard
@@ -54,9 +55,20 @@ int DRAWMODE = drawSPHERE;
 boolean orthoView = false;
 
 float lerpPercent;
+float a = 0;
+
+float spinMult = 1 / 6.0;
+
+boolean breath = true;
+float breathSpeed = .0135;
+float breathMag = 5;
+
+boolean RECORDING = false;
 
 void setup() {
   size(1200, 800, P3D);  
+  frameRate(60);
+  smooth(8);
 
   cam = new PeasyCam(this, distance);
   cam.setMinimumDistance(100);
@@ -74,6 +86,70 @@ void setup() {
   //}
 }
 
+
+
+void draw() {
+  background(35);
+
+  lights();
+
+  //spotLight(255,255,255, 1000, 1000, 1000, -1, -1, -1, radians(1), 600);
+
+  directionalLight(128, 128, 128, 1000, 1000, 1000);
+  //directionalLight(100, 100, 100, -1000, -1000, 1000);
+  directionalLight(25, 25, 25, -1000, -1000, 0);
+
+  rotateY(a * spinMult);
+
+  if (myFrameCount++ < speed) {
+    for (int k = 0; k < numIterations; k++) {
+      int r = floor(random(p.size()));
+      if (canBeSame || r != prev) {
+        /**if (r == 0) {
+         drawer = PVector.lerp(drawer, p[0], getLerpPercent());
+         c1Points.add(drawer);
+         } else if (r == 1) {
+         drawer = PVector.lerp(drawer, p[1], getLerpPercent());
+         c2Points.add(drawer);
+         } else if (r == 2) {
+         drawer = PVector.lerp(drawer, p[2], getLerpPercent());
+         c3Points.add(drawer);
+         } else if (r == 3) {
+         drawer = PVector.lerp(drawer, p[3], getLerpPercent());
+         c4Points.add(drawer);
+         }**/
+        drawer = PVector.lerp(drawer, p.get(r).getPos(), getLerpPercent());
+        points.add(new Vertex(drawer, getColor(r)));
+        prev = r;
+      }
+    }
+  } else if (myFrameCount == 500) {
+    //frameCount = -1;
+    print("Adding points have ended");
+  }
+
+  //strokeWeight(12);
+  drawVertices();
+
+  float oldDiam = 0;
+  if (breath) {
+    oldDiam = diam;
+    diam = diam + cos(a) * breathMag;
+    a += breathSpeed;
+  }
+
+  for (Vertex v : points) {
+    v.display();
+  }
+
+  if (breath) {
+    diam = oldDiam;
+  }
+
+  recordVid();
+  //recordGif();
+}
+
 void refresh() {
   myFrameCount = 0;
 
@@ -87,9 +163,9 @@ void refresh() {
   p.clear();
   points.clear();
 
-  drawer = new PVector(random(width), random(height), random(-height, 0));
-
   addPoints();
+  
+    drawer = p.get((int) random(p.size())).pos;
 }
 
 void addPoints() {
@@ -99,7 +175,7 @@ void addPoints() {
     cubeSettings();
   } else if (MODE == OCTA) {
     octaSettings();
-  } else if(MODE == ICOS){
+  } else if (MODE == ICOS) {
     icosaSettings();
   }
 
@@ -121,10 +197,10 @@ void tetraSettings() {
 
   //float r = 200;
 
-  a = 400;
+  float a = 400;
 
-  h = a * sqrt(3) / 2;
-  H = a * sqrt(6) / 3;
+  float h = a * sqrt(3) / 2;
+  float H = a * sqrt(6) / 3;
 
   p.add(new Vertex(-a/2, h/3, H/4));
   p.add(new Vertex(a/2, h/3, H/4));
@@ -135,6 +211,8 @@ void tetraSettings() {
 void cubeSettings() {
   DRAWMODE = drawCUBE;
   lerpPercent = .7;
+
+  diam = 10.3;
 
   int numSides = 4;
   float r = 200;
@@ -188,8 +266,7 @@ void icosaSettings() {
       v[0] = 0;
       v[1] = w;
       v[2] = h;
-    }
-    else if (i == 2){
+    } else if (i == 2) {
       v[0] = h;
       v[1] = 0;
       v[2] = w;
@@ -205,52 +282,6 @@ void icosaSettings() {
 float getLerpPercent() {
   //.7
   return lerpPercent;
-}
-
-void draw() {
-  background(35);
-
-  lights();
-
-  //spotLight(255,255,255, 1000, 1000, 1000, -1, -1, -1, radians(1), 600);
-
-  directionalLight(128, 128, 128, 1000, 1000, 1000);
-  directionalLight(100, 100, 100, -1000, -1000, 1000);
-  directionalLight(25, 25, 25, -1000, -1000, 0);
-
-  if (myFrameCount++ < speed) {
-    for (int k = 0; k < numIterations; k++) {
-      int r = floor(random(p.size()));
-      if (canBeSame || r != prev) {
-        /**if (r == 0) {
-         drawer = PVector.lerp(drawer, p[0], getLerpPercent());
-         c1Points.add(drawer);
-         } else if (r == 1) {
-         drawer = PVector.lerp(drawer, p[1], getLerpPercent());
-         c2Points.add(drawer);
-         } else if (r == 2) {
-         drawer = PVector.lerp(drawer, p[2], getLerpPercent());
-         c3Points.add(drawer);
-         } else if (r == 3) {
-         drawer = PVector.lerp(drawer, p[3], getLerpPercent());
-         c4Points.add(drawer);
-         }**/
-        drawer = PVector.lerp(drawer, p.get(r).getPos(), getLerpPercent());
-        points.add(new Vertex(drawer, getColor(r)));
-        prev = r;
-      }
-    }
-  } else if (myFrameCount == 500) {
-    //frameCount = -1;
-    print("Adding points have ended");
-  }
-
-  //strokeWeight(12);
-  drawVertices();
-
-  for (Vertex v : points) {
-    v.display();
-  }
 }
 
 color getColor(int num) {
@@ -273,16 +304,37 @@ void drawPoints(ArrayList<PVector> points, color c) {
   }
 }
 
+void recordGif() {
+  if (RECORDING) {
+    print("saved");
+    saveFrame("ff###.gif");
+    if ((a - rA) * spinMult >= radians(360)) {
+      exit();
+    }
+  }
+}
+
+void recordVid(){
+  if (RECORDING) {
+    saveFrame("movie/Chaos3D-######.png");
+    //fill(255, 0, 0);
+    //textSize(20);
+    //text("seconds: " + ((frameCount - initialFrame) / frameRate), 15, 15);
+  }
+}
+
 void keyPressed() {
   if (key - '0' >= CUBE && key - '0' <= TETRA) {
     MODE = key - '0';
     refresh();
-  }
-  else if(key == 's'){
-    saveFrame("Chaos3D-######.png");
+  } else if (key == 's') {
+    saveFrame("Chaos3Dasdf-######.png");
     System.out.println("Frame saved");
-  }
-  else{
+  } else if (key == 'r') {
+    RECORDING = !RECORDING;
+    rA = a;
+  } else
+  {
     refresh();
   }
 }

@@ -31,6 +31,11 @@ boolean RECORDING = false;
 int initialFrame = 0;
 
 void setup() {
+  
+  //WATCHOUT FOR THIS
+  blendMode(DIFFERENCE);
+  noStroke();
+  
   noiseDetail(NOISEDET);
 
   size(800, 800);

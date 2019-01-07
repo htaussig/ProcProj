@@ -1,6 +1,6 @@
 import java.util.*;
 
-int NUMSIDES = 3;
+int NUMSIDES = 2;
 
 ArrayList<Circle> circles;
 float minCircRadius = 85;

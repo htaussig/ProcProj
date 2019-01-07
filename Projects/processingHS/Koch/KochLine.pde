@@ -13,37 +13,6 @@ public class KochLine{
     realEnd = end.copy();
   }
   
-  public void goHome(){
-    PVector dStart = PVector.sub(realStart, start);
-    PVector dEnd = PVector.sub(realEnd, end);
-    
-    if(dStart.x < .1 && dStart.y < .1){
-      start = realStart.copy();      
-    }
-    
-    if(dEnd.x < .1 && dEnd.y < .1){
-       end = realEnd.copy();
-    }
-    
-    //the further away we are, the smaller mult should be
-    float mulStart = 300;
-    float mulEnd = 300;
-    
-    mulStart /= dStart.mag();
-    mulEnd /= dEnd.mag();
-    
-    dStart.div(mulStart);
-    dEnd.div(mulEnd);
-    
-    start.add(dStart);
-    end.add(dEnd);
-  }
-  
-  public void wiggle(){
-    start.add(PVector.random2D());
-    end.add(PVector.random2D());
-  }
-  
   public PVector getA(){
     return start.copy();
   }
@@ -73,6 +42,10 @@ public class KochLine{
   }
   
   public PVector getE(){
+    return end.copy();
+  }
+  
+  public PVector getF(){
     return end.copy();
   }
   

@@ -34,27 +34,17 @@ void generate(){
     PVector c = l.getC();
     PVector d = l.getD();
     PVector e = l.getE();
+    PVector f = l.getF();
     
     next.add(new KochLine(a, b));
     next.add(new KochLine(b, c));
     next.add(new KochLine(c, d));
     next.add(new KochLine(d, e));
+    next.add(new KochLine(e, f));
   }
   lines = next;
 }
 
 void keyPressed(){
-  if(key == ' '){
-    for(KochLine l : lines){
-      l.wiggle();
-    }
-  }
-  else if(key == 'g'){
-     if(returning){
-       returning = false;
-     }
-     else{
-       returning = true;
-     }
-  }
+
 }

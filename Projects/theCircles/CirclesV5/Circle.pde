@@ -13,14 +13,20 @@ public class Circle{
     col = color(hue, sat, bri);
   }
   
+  public Circle(float x_, float y_, float r_, color col_){
+    x = x_;
+    y = y_;
+    r = r_;
+    col = col_;
+  }
   
   void display(Circle[] near){
     noStroke();
     //strokeWeight(5);
     color c = lerpColor(col, near[1].col, .5);
-    c = lerpColor(c, near[1].col, .5);
+    c = lerpColor(c, near[0].col, .5);
     fill(c);
-    //fill(color(hue, sat, bri));
+    //fill(col);
     beginShape();
     vertex(x, y);
     for(int i = 0; i < NUMSIDES; i++){

@@ -54,6 +54,25 @@ public class Palette{
     return "\"" + str + "\"";
   }
   
+<<<<<<< HEAD
+=======
+  void display(float x, float y, float w, float h){
+    //System.out.println(colorBlocks.size());
+    pushMatrix();
+    translate(x, y);
+    for(ColorBlock cBlock : colorBlocks){
+      cBlock.display(w, h);
+      //take the percent and multiply by the width
+      translate((cBlock.size) * (w / 100.0), 0);
+    }
+    popMatrix();
+  }
+  
+  void display(float w, float h){
+    display(0, 0, w, h);
+  }
+  
+>>>>>>> 78a32da87042704bb01f687262f06e4810493a27
   color getColor(){
     float num = random(100);
     int i = 0;
@@ -79,6 +98,17 @@ public class ColorBlock{
     col = col_;
     size = size_;
   }
+<<<<<<< HEAD
+=======
+  
+  void display(float w, float h){
+    fill(col);
+    noStroke();
+    //stroke(1);
+    //System.out.println(hex(col));
+    rect(0, 0, w * size / 100, h);
+  }
+>>>>>>> 78a32da87042704bb01f687262f06e4810493a27
 
 }
 

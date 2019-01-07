@@ -2,9 +2,15 @@ float pointD = 5;
 float col = 0;
 float border = 105;
 
+<<<<<<< HEAD
 float minCircRadius = 5;
 float maxCircRadius = 13;
 float minDistance = 5;
+=======
+float minCircRadius = 15;
+float maxCircRadius = 450;
+float minDistance = 25;
+>>>>>>> 78a32da87042704bb01f687262f06e4810493a27
 
 ArrayList<Vertex> points;
 ArrayList<Connect> cnctions;
@@ -16,6 +22,7 @@ int numConnections = 3;
 //float num = 0;
 
 float zRot = 0;
+<<<<<<< HEAD
 float depth = 1500;
 
 
@@ -31,6 +38,13 @@ void setup() {
   size(800, 800, P3D);
   //ortho();
   camera(width/2.0, height/2.0, (height/2.0) / tan(PI*30.0 / 180.0) + depth, width/2.0, height/2.0, 0, 0, 1, 0);
+=======
+float depth = 800;
+
+void setup() {
+  size(800, 800, P3D);
+  camera(width/2.0, height/2.0, (height/2.0) / tan(PI*30.0 / 180.0) + 500, width/2.0, height/2.0, 0, 0, 1, 0);
+>>>>>>> 78a32da87042704bb01f687262f06e4810493a27
   strokeWeight(2);
   initi();
 }
@@ -41,9 +55,12 @@ void initi() {
   cnctionsToCheck = new ArrayList<Connect>();
   triangles = new ArrayList<Triangle>();
 
+<<<<<<< HEAD
   //could subtract by border
   r = width * 1.2;
 
+=======
+>>>>>>> 78a32da87042704bb01f687262f06e4810493a27
   createPoints();
 
   //genConnections();
@@ -84,6 +101,7 @@ void display() {
   }
 }
 
+<<<<<<< HEAD
 //spiral stuff
 void decreaseR() {
   //exact angle you want to go in
@@ -105,11 +123,17 @@ void createPoints() {
       decreaseR();
     }
     a += da;
+=======
+void createPoints() {
+  
+  while (nextPoint(0)) {
+>>>>>>> 78a32da87042704bb01f687262f06e4810493a27
   }
 }
 
 boolean nextPoint(int num) {
   if (num >= 100) {
+<<<<<<< HEAD
     //a += da;
     return false;
   }
@@ -133,6 +157,16 @@ boolean nextPoint(int num) {
   
   float size = random(minCircRadius, maxCircRadius);
   Vertex v1 = new Vertex(new PVector(theX, theY, z), size);
+=======
+    return false;
+  }
+
+  float x = random(-(width - border) / 2, (width - border) / 2); 
+  float y = random(-(height - border) / 2, (height - border) / 2);
+  float z = random(-(depth - border) / 2, (depth - border) / 2);
+  float r = random(minCircRadius, maxCircRadius);
+  Vertex v1 = new Vertex(new PVector(x, y, z), r);
+>>>>>>> 78a32da87042704bb01f687262f06e4810493a27
 
   for (Vertex v : points) {
     if (circlesOverlap(v1, v)) {
@@ -148,7 +182,11 @@ boolean circlesOverlap(Vertex circ1, Vertex circ2) {
   return distance(circ1, circ2) <= circ1.r + circ2.r + minDistance;
 }
 
+<<<<<<< HEAD
 /**void genConnections() {
+=======
+void genConnections() {
+>>>>>>> 78a32da87042704bb01f687262f06e4810493a27
   genFirstTriangle((int) random(points.size()));
 
   Triangle t = triangles.get(0);
@@ -176,7 +214,11 @@ void genNextTriangles() {
   }
 
   cnctionsToCheck = next;
+<<<<<<< HEAD
 }**/
+=======
+}
+>>>>>>> 78a32da87042704bb01f687262f06e4810493a27
 
 
 void safeAddC(Connect c, ArrayList<Connect> cList) {
@@ -307,7 +349,11 @@ float distance(Vertex v1, Vertex v2) {
 void keyPressed() {
   if (key == 'g') {
     cnctions.clear();
+<<<<<<< HEAD
     //genConnections();
+=======
+    genConnections();
+>>>>>>> 78a32da87042704bb01f687262f06e4810493a27
   } else if (key == 'v') {
     showVertex = !showVertex;
   } else if (key == 's') {

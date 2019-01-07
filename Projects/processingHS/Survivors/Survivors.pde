@@ -28,7 +28,11 @@ Graph popGraph;
 //this seed does not work on the PVector.random2D() calls
 long seed;
 
+<<<<<<< HEAD
 boolean RECORDING = false;
+=======
+boolean RECORDING = true;
+>>>>>>> 78a32da87042704bb01f687262f06e4810493a27
 int initialFrame = 0;
 
 //4-player = -831283456

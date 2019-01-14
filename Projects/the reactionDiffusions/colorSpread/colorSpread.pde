@@ -2,17 +2,17 @@
 //GenerateSerendipity
 //Jan 2019
 
-String fileName = "13.png";
+String fileName = "12.png";
 PImage img;
 
-int numPoints = 2430;
+int numPoints = 4430;
 PVector[] points;
 
 color[][] thePix;
 
 ArrayList<Integer> preference;
 
-float MINBRIGHT = 30;
+float MINBRIGHT = 190;
 //how much to add to the brightness calculated
 float OPACADD = 70;
 
@@ -22,7 +22,7 @@ boolean SMOOTH = true;
 float DEV = 21;
 
 //can use my PalletteBook Sketch, click on the pallettes, and copy them in here
-Palette pal = new Palette("37#12E6C826#A287F403#414141");
+Palette pal = new Palette("37#2D405926#EA545517#F07B3F17#FFD460");
 
 void setup() {
   size(300, 300);
@@ -38,7 +38,6 @@ void setup() {
 
   colorMode(RGB);
 
-  image(img, 0, 0);
 }
 
 void initPoints() {
@@ -93,21 +92,19 @@ void draw() {
 
   trySpread();
 
-
   background(0);
 
   display();
 }
 
 void trySpread() {
-  loadPixels();
 
   for (int x = 0; x < width; x++) {
     for (int y = 0; y < height; y++) {
       //basically does it have a color
       //not sure if we want the second conditional here
       if (thePix[x][y] != -1) {
-        if (brightness(pixels[x + (y * width)]) > MINBRIGHT) {
+        if (brightness(img.pixels[x + (y * width)]) > MINBRIGHT) {
           //print(x, y);
           //spreads color and that one will spread color again bc they don't update all at once
           spreadColor(x, y);
@@ -121,8 +118,6 @@ void trySpread() {
 
 void display() {
   loadPixels();
-
-
 
   for (int x = 0; x < width; x++) {
     for (int y = 0; y < height; y++) {
@@ -181,7 +176,7 @@ void spreadColor(int x, int y) {
 
   for (int i = x - 1; i <= x + 1; i++) {
     for (int j = y -1; j <= y + 1; j++) {
-      if (inBounds(i, j) && thePix[i][j] != col && brightness(pixels[x + (y * width)]) > MINBRIGHT) {
+      if (inBounds(i, j) && thePix[i][j] != col && brightness(img.pixels[x + (y * width)]) > MINBRIGHT) {
         if (hasPreference(x, y, i, j)) {
           //print("a");
           thePix[i][j] = col;

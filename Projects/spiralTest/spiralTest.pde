@@ -1,6 +1,13 @@
+<<<<<<< HEAD
+
+float a = 0;
+//why is this width * 2
+float r;
+=======
 float a = 0;
 //why is this width * 2
 float r = width * 2;
+>>>>>>> 78a32da87042704bb01f687262f06e4810493a27
 
 float x = 0;
 float y = 0;
@@ -9,6 +16,10 @@ float da = radians(1);
 
 void setup(){
   size(600, 600);
+<<<<<<< HEAD
+  r = width / 2;
+=======
+>>>>>>> 78a32da87042704bb01f687262f06e4810493a27
   background(255);
 }
 

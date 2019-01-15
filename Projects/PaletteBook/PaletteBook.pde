@@ -1,10 +1,10 @@
-float XDISP = 50;
-float YDISP = 50;
+float XDISP = 25;
+float YDISP = 25;
 
-float PW = 300;
-float PH = 100;
+float PW = 200;
+float PH = 80;
 
-int NUMCOLS = 2;
+int NUMCOLS = 5;
 
 float XIN = 50;
 float YIN = 50;
@@ -16,7 +16,7 @@ private String fileName = "paletteBook.txt";
 private String helperFile = "helper.txt";
 
 void setup() {
-  size(800, 1140);
+  size(1200, 700);
   backGCol = color(255);
   palettes = new ArrayList<Palette>();
 

@@ -11,8 +11,8 @@
 
 float arenaWidth = 800;
 boolean gameOver = false;
-int numTeams = 4;
-int numVehicles = 400;
+int numTeams = 2;
+int numVehicles = 100;
 
 CheckBox debugBox = new CheckBox(4, 4);
 CheckBox fastBox = new CheckBox(4, 28);
@@ -28,16 +28,20 @@ Graph popGraph;
 //this seed does not work on the PVector.random2D() calls
 long seed;
 
+<<<<<<< HEAD
+boolean RECORDING = false;
+=======
 boolean RECORDING = true;
+>>>>>>> 78a32da87042704bb01f687262f06e4810493a27
 int initialFrame = 0;
 
 //4-player = -831283456
 
 void setup() {
   size(1200, 800);
-  frameRate(60);
+  frameRate(50);
   seed = (long) random(-1000000000, 1000000000);
-  randomSeed(-831283456);
+  randomSeed(seed);
   for (int i = 0; i < popsNow.length; i++) {
     popsNow[i] = 0.0;
   }

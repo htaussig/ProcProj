@@ -168,27 +168,6 @@ class Vehicle {
     applyForce(steerE);
   }
 
-  /*private void eat(ArrayList<PVector> good, ArrayList<PVector> bad) {  
-   for (int i = good.size() - 1; i >= 0; i--) {
-   float d = position.dist(good.get(i));
-   if (d < maxspeed + 2) {
-   good.remove(i);
-   health += nutritionGood;
-   }
-   }
-   
-   for (int i = bad.size() - 1; i >= 0; i--) {
-   float d = position.dist(bad.get(i));
-   if (d < maxspeed + 2) {
-   bad.remove(i);
-   health += nutritionBad;
-   }
-   }
-   
-   if (health > 1) {
-   health = 1;
-   }
-   }*/
 
   //returns whether or not it is a killing blow
   public boolean takeDamage(float damageTaken) {

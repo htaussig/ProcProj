@@ -36,7 +36,7 @@ class WaveStrip {
 
       vertex(((i + 1.0) / NUMTRIS) * width, this.y);
 
-      tempA += PI / 1;
+      tempA += PI / 4;
     }
 
     a += da;

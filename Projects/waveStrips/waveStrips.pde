@@ -44,15 +44,17 @@ void drawBackground(){
 }
 
 void draw() {
+  background(255);
   
-  drawBackground();
+  //drawBackground();
   
   strokeWeight(2);
+  stroke(0);
 
   //stroke(255);
   noFill();
-  noStroke();
-  fill(0);
+  //noStroke();
+  //fill(0);
   //noFill();
 
   for (int i = (int) NUMWAVES - 1; i >= 0; i--) {

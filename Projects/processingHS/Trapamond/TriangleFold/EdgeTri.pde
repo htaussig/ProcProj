@@ -1,3 +1,7 @@
+
+//the angle the finished triangle ends at
+float doneAngle = PI;
+
 public class EdgeTri extends Triangle {
 
   PVector axis;
@@ -12,7 +16,7 @@ public class EdgeTri extends Triangle {
   }
 
   public boolean done() {
-    if (abs(yA) >= PI) {
+    if (abs(yA) >= doneAngle) {
       return true;
     }
     return false;

@@ -2,7 +2,7 @@
 //GenerateSerendipity
 //Jan 2019
 
-String fileName = "12.png";
+String fileName = "yeet.png";
 PImage img;
 
 int numPoints = 4430;
@@ -25,7 +25,7 @@ float DEV = 21;
 Palette pal = new Palette("37#2D405926#EA545517#F07B3F17#FFD460");
 
 void setup() {
-  size(300, 300);
+  size(480, 640);
   img = loadImage(fileName);
 
   frameRate(3000);

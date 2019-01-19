@@ -60,6 +60,8 @@ void reInit(){
 }
 
 void draw(){
+    ortho();
+  
     background(0);
 
     cameraStuff();

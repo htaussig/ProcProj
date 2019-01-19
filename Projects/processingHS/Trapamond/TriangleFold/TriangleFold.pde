@@ -1,8 +1,12 @@
+//https://beesandbombs.tumblr.com/post/85134754974/the-official-bees-bombs-gif-guide-because-a-few
+
 ArrayList<Triangle> triangles = new ArrayList<Triangle>();
 float z = 0;
 float zA;
-float xA = 1;
+float xA = 0;
 float rotV = -radians(2);
+
+boolean RECORDING = true;
 
 void setup() {
   size(800, 800, P3D);
@@ -15,12 +19,17 @@ void setup() {
 }
 
 void draw() {
+  
+  ortho();
+  
+  frameRate(30);
+  
   background(0);
   lights();
   translate(width / 2, height / 2, 0);
   rotateX(xA);
   rotateZ(zA);
-  zA += radians(.4);
+  zA += radians(.2);
   //xA += radians(1.1);
   if(triangles.size() == 1){
    mousePressed(); 
@@ -43,6 +52,17 @@ void draw() {
   /*if(frameCount % 64 == 0){
    mousePressed();
    }*/
+   
+   
+  if (RECORDING) {
+    if (frameCount < (TWO_PI / radians(.1))) {
+      println("yee");
+      saveFrame("movie/f###-waveStrips.gif");
+    }
+    else{
+     println("nay"); 
+    }
+  }
 }
 
 void mousePressed() {

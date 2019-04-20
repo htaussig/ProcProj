@@ -1,3 +1,4 @@
+
 // Daniel Shiffman
 // http://codingtra.in
 // http://patreon.com/codingtrain
@@ -9,10 +10,12 @@
 // Also, for reference
 // http://hg.postspectacular.com/toxiclibs/src/44d9932dbc9f9c69a170643e2d459f449562b750/src.sim/toxi/sim/grayscott/GrayScott.java?at=default
 
+
+
 Cell[][] grid;
 Cell[][] prev;
 
-int NUMTHINGS = 25;
+int NUMTHINGS = 225;
 float hueAdd = 100;
 float hueAddChange = .5;
 
@@ -20,8 +23,10 @@ float hueAddChange = .5;
 float HUEAMP = 85;
 
 void setup() {
+
+  
   frameRate(1000);
-  size(300, 300);
+  size(500, 500, JAVA2D);
   grid = new Cell[width][height];
   prev = new Cell[width][height];
 
@@ -51,7 +56,7 @@ void setup() {
 
 float dA = 1.0;
 float dB = 0.5;
-float feed = 0.0545;
+float feed = .062;
 //originally 0.62
 float k = 0.062;
 
@@ -98,8 +103,16 @@ void update() {
       laplaceB += prev[i-1][j+1].b*0.05;
       laplaceB += prev[i+1][j+1].b*0.05;
 
-      newspot.a = a + (dA*laplaceA - a*b*b + feed*(1-a))*1;
-      newspot.b = b + (dB*laplaceB + a*b*b - (k+feed)*b)*1;
+      //good values .03 to .082
+      float feedHere = map(i, width - 1, 1, .013, .123);
+      //float val = map(j, height - 1, 1, .025, .08);
+      float val = map(j, height - 1, 1, .013, .123);
+      
+      feedHere = (feedHere + val) / 2;
+      //vary k with y??
+  
+      newspot.a = a + (dA*laplaceA - a*b*b + feedHere*(1-a))*1;
+      newspot.b = b + (dB*laplaceB + a*b*b - (k+feedHere)*b)*1;
 
       newspot.a = constrain(newspot.a, 0, 1);
       newspot.b = constrain(newspot.b, 0, 1);
@@ -117,7 +130,7 @@ void draw() {
   //println(frameRate);
   background(0);
 
-  for (int i = 0; i < 10; i++) {
+  for (int i = 0; i < 100; i++) {
     update();
     swap();
   }
@@ -181,5 +194,21 @@ void keyPressed() {
     borders();
     saveFrame("ReactionDiffusion-######.png");
     System.out.println("Frame saved");
+  }
+  if(key == 'x'){
+    feed -= .001;
+    System.out.println(feed);
+  }
+  if(key == 'y'){
+    feed += .001;
+    System.out.println(feed);
+  }
+  if(key == 'a'){
+    k -= .001;
+    System.out.println(k);
+  }
+  if(key == 'b'){
+    k += .001;
+    System.out.println(k);
   }
 }

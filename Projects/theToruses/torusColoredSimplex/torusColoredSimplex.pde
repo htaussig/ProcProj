@@ -60,7 +60,7 @@ float maxColor = 225;
 //colors.add(color(117, 2, 242, 5));
   //colors.add(color(176, 98, 94, 5));
 
-boolean RECORDING = true;
+boolean RECORDING = false;
 
 int totalFrames = 360;
 int counter = 0;

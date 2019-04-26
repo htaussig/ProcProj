@@ -21,6 +21,15 @@ public class Particle {
     increasing = true;
     theTempR = particleSize;
   }
+  public Particle(float x, float y) {
+    pos = new PVector(x, y);
+    vel = new PVector(0, 0);
+    acc = new PVector(0, 0);
+    prevPos = pos.copy();
+    h = HMIN;
+    increasing = true;
+    theTempR = particleSize;
+  }
 
   void update() {
     prevPos = pos.copy();
@@ -44,7 +53,8 @@ public class Particle {
   }
 
   void display() {
-    stroke(getColor(colIndex));
+    noStroke();
+    //stroke(getColor(0));
     /*if(increasing){
      h += hInc;
      }
@@ -61,8 +71,9 @@ public class Particle {
      increasing = true;
      }*/
     //System.out.println(h);
-    strokeWeight(1);
+    //strokeWeight(1);
     //point(pos.x, pos.y);
+    doColors();
     drawOnTorus(pos.x, pos.y);
   }
 
@@ -94,7 +105,7 @@ public class Particle {
     yoff += (ayVal)  * subMag * axyVal;
     zoff += -sin(aSub) * subMag;
 
-    doColors(aMainHere, aSub);
+    doColors();
 
     pushMatrix();
     translate(xoff * drawMag, yoff * drawMag, zoff * drawMag);
@@ -150,17 +161,33 @@ public class Particle {
     endShape();
   }
 
+  void doColors(){
+    int index = (int) pos.x + (int) (pos.y * width);
+    
+    float v = flowField[index];
+    
+    float val = map(v, -.8, .8, 0, colors.size() - 1);
+    //println(val);
+    fill(getColor(val));
+  }
+  
+  //doesn't do colors :)
   void doColors(float aMain, float aSub) {
     //println(aMain);
-    float colVal = map(aMain, 0, TWO_PI, 0, 255);
-    float val2 = map(aSub, 0, TWO_PI, 0, 255);
-
-    colVal = (colVal + val2) % 255;
-    fill(colVal, 100, 100);
     
-    theTempR = map(colVal, 0, 255, -1, 1);
-    theTempR = abs(theTempR);
-    theTempR = map(theTempR, 0, 1, 1, particleSize);
+    
+    ////////////////////////////////////////////////////////
+    //float colVal = map(aMain, 0, TWO_PI, 0, 255);
+    //float val2 = map(aSub, 0, TWO_PI, 0, 255);
+
+    //colVal = (colVal + val2) % 255;
+    //fill(colVal, 100, 100);
+    
+    //theTempR = map(colVal, 0, 255, -1, 1);
+    //theTempR = abs(theTempR);
+    //theTempR = map(theTempR, 0, 1, 1, particleSize);
+        ////////////////////////////////////////////////////////
+        
 
     //rainbow opacity mode
     //float strokeVal = map(zoff, -subMag, subMag, 55, 255);

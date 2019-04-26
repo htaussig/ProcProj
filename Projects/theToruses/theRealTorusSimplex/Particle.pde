@@ -21,14 +21,24 @@ public class Particle {
     increasing = true;
     theTempR = particleSize;
   }
+  
+  public Particle(float x, float y) {
+    pos = new PVector(x, y);
+    vel = new PVector(0, 0);
+    acc = new PVector(0, 0);
+    prevPos = pos.copy();
+    h = HMIN;
+    increasing = true;
+    theTempR = particleSize;
+  }
 
   void update() {
     prevPos = pos.copy();
     vel.sub(vel);
     vel.add(acc);
     vel.limit(maxSpeed);
-    pos.add(vel);
-    acc.mult(0);
+    //pos.add(vel);
+    //acc.mult(0);
   }
 
   void follow(PVector[] flowField) {
@@ -40,7 +50,8 @@ public class Particle {
   }
 
   void applyForce(PVector force) {
-    acc.add(force);
+    //acc.add(force);
+    acc = force;
   }
 
   void display() {
@@ -123,24 +134,24 @@ public class Particle {
     float baseR = r * .5;
     float will = l;
 
-    beginShape(TRIANGLES);
-    vertex(-baseR, -baseR, -baseR);
-    vertex( baseR, -baseR, -baseR);
-    vertex(   0, 0, will * r);
+    //beginShape(TRIANGLES);
+    //vertex(-baseR, -baseR, -baseR);
+    //vertex( baseR, -baseR, -baseR);
+    //vertex(   0, 0, will * r);
 
-    vertex( baseR, -baseR, -baseR);
-    vertex( baseR, baseR, -baseR);
-    vertex(   0, 0, will * r);
+    //vertex( baseR, -baseR, -baseR);
+    //vertex( baseR, baseR, -baseR);
+    //vertex(   0, 0, will * r);
 
-    vertex( baseR, baseR, -baseR);
-    vertex(-baseR, baseR, -baseR);
-    vertex(   0, 0, will * r);
+    //vertex( baseR, baseR, -baseR);
+    //vertex(-baseR, baseR, -baseR);
+    //vertex(   0, 0, will * r);
 
-    vertex(-baseR, baseR, -baseR);
-    vertex(-baseR, -baseR, -baseR);
-    vertex(  0, 0, will * r);
+    //vertex(-baseR, baseR, -baseR);
+    //vertex(-baseR, -baseR, -baseR);
+    //vertex(  0, 0, will * r);
 
-    endShape(CLOSE);
+    //endShape(CLOSE);
     
     beginShape();
     vertex(baseR, baseR, -baseR);
@@ -153,21 +164,19 @@ public class Particle {
   void doColors(float aMain, float aSub) {
     noStroke();
     //println(aMain);
-    float colVal = map(aMain, 0, TWO_PI, 0, 255);
-    float val2 = map(aSub, 0, TWO_PI, 0, 255);
+    //float colVal = map(aMain, 0, TWO_PI, 0, 255);
+    //float val2 = map(aSub, 0, TWO_PI, 0, 255);
 
-    colVal = (colVal + val2) % 255;
-    fill(colVal, 100, 100);
+    //colVal = (colVal + val2) % 255;
+    //fill(colVal, 100, 100);
     
-    theTempR = map(colVal, 0, 255, -1, 1);
-    theTempR = abs(theTempR);
-    theTempR = map(theTempR, 0, 1, 1, particleSize);
+    //theTempR = map(colVal, 0, 255, -1, 1);
+    //theTempR = abs(theTempR);
+    //theTempR = map(theTempR, 0, 1, 1, particleSize);
+    
+    float val = map((acc.heading() + 2 * TWO_PI) % TWO_PI, 0, TWO_PI, 0, 255);
+    fill(val, 255, val);
 
-    //rainbow opacity mode
-    //float strokeVal = map(zoff, -subMag, subMag, 55, 255);
-    //float colVal = map(xoff, -mainMag, mainMag, 70, 220);
-    //strokeWeight(2);
-    //fill(colVal, 100, 100, strokeVal);
   }
 
 

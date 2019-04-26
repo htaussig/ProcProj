@@ -73,7 +73,7 @@ public class Particle {
     //System.out.println(h);
     //strokeWeight(1);
     //point(pos.x, pos.y);
-    doColors();
+    //doColors();
     drawOnTorus(pos.x, pos.y);
   }
 
@@ -105,7 +105,6 @@ public class Particle {
     yoff += (ayVal)  * subMag * axyVal;
     zoff += -sin(aSub) * subMag;
 
-    doColors();
 
     pushMatrix();
     translate(xoff * drawMag, yoff * drawMag, zoff * drawMag);
@@ -128,6 +127,8 @@ public class Particle {
   }
 
   void drawTetra(float r, float l) {
+    doColors();
+    
     //println(r);
     rotateY(-PI / 2);
     
@@ -164,11 +165,11 @@ public class Particle {
   void doColors(){
     int index = (int) pos.x + (int) (pos.y * width);
     
-    float v = flowField[index];
+    //float v = flowField[index];
     
-    float val = map(v, -.8, .8, 0, colors.size() - 1);
+    //float val = map(v, -.8, .8, 0, 255);
     //println(val);
-    fill(getColor(val));
+    fill(150);
   }
   
   //doesn't do colors :)

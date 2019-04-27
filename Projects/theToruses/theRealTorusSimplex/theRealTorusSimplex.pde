@@ -77,19 +77,27 @@ boolean lineMode = false;
 float speedChange = .01;
 
 
-float particleSize = 12;
+float particleSize = 15;
 
 //camera stuff
-float camRotSpeed = 1/11350.0;
+float camRotSpeed = 1/350.0;
 
+float pixelDX = 20;
+float pixelDY = 40;
+float aMainChange, aSubChange;
+
+OpenSimplexNoise noise;
 void setup() {
+  
   size(1000, 1000, P3D);
   frameRate(60);
   //colorMode(HSB, 255, 100, 100);
   background(0);
   
-  for (float x = 0; x < width; x += 10) {
-    for (float y = 0; y < height; y += 10) {
+  calculateAngleChanges();
+  
+  for (float x = 0; x < width; x += pixelDX) {
+    for (float y = 0; y < height; y += pixelDY) {
       particles.add(new Particle(x, y));
     }
   }
@@ -99,22 +107,21 @@ void setup() {
   }
   randomSeed(seed);
   noiseSeed(seed);
+  noise = new OpenSimplexNoise(seed);
   
   rows = (int) (height / scl + 1);
   cols = (int) (width / scl + 1);
   flowField = new PVector[cols * rows];
 
-  for (float x = 0; x < width; x += 20) {
-    for (float y = 0; y < height; y += 20) {
-      particles.add(new Particle(x, y));
-    }
-  }
   /*for(int i = 0; i < NUMCOLS; i++){
    //colors.add(color(random(255), random(255), random(255), 2));
    colors.add(color(random(255), 125, 255, 2));
    }*/
-  colors.add(color(117, 2, 242, 4));
-  colors.add(color(176, 98, 94, 4));
+  colors.add(color(255));
+  colors.add(color(8, 255, 236));
+  colors.add(color(0));
+  colors.add(color(252, 23, 249));
+  colors.add(color(255));
   //smooth(8)
 
 }
@@ -151,7 +158,7 @@ void draw() {
       //val = map(val, 0, 1, 100, 255);
 
       //multiply by 1.3 because the values don't get too close to 0 and 1
-      float angle = map(val, .1, .8, 0, TWO_PI) * randomMulti;
+      float angle = map(val, -.8, .8, 0, TWO_PI) * randomMulti;
       PVector v = PVector.fromAngle(angle);
       v.setMag(10);
       flowField[index] = v;
@@ -192,6 +199,11 @@ void draw() {
   }
 }
 
+void calculateAngleChanges(){
+  aMainChange = TWO_PI / (width / pixelDX);
+  aSubChange = TWO_PI / (height / pixelDY);  
+}
+
 //moving the torus around in a circle to change how it changes
 //the torus opens to the z direction
 //this means we want to travel along a circle in the zy plane?
@@ -206,13 +218,13 @@ void moveDonut() {
   //different combinations down here has weird effects
 
   //moves stuff towards middle
-  xoffInit += speedChange;
+  //xoffInit += speedChange;
 
   //different on left and right sides
   yoffInit += speedChange;
   
   //moves stuff upwards
-  zoffInit += speedChange;
+  //zoffInit += speedChange;
 }
 
 float getNoiseValue(float x, float y, float zoff) {
@@ -242,7 +254,7 @@ float getNoiseValue(float x, float y, float zoff) {
   yoff += (ayVal)  * subMag * axyVal;
   zoff += -sin(aSub) * subMag;
 
-  return noise((xoff + xoffInit) * density, (yoff + yoffInit) * density, (zoff) * density);
+  return (float) noise.eval((xoff + xoffInit) * density, (yoff + yoffInit) * density, (zoff) * density);
 }
 
 void keyPressed() {

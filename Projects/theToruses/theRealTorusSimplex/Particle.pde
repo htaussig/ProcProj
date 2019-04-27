@@ -119,11 +119,31 @@ public class Particle {
     
     //box(12);
     //drawTetra(particleSize, 5.5);
-    drawTetra(particleSize, 5.5);
+    //drawTetra(particleSize, 5.5);
+    drawTorusPixel();
 
     //sphereDetail(4);
     //sphere(8);
 
+    popMatrix();
+  }
+
+  //so a torus pixel is gonna go from the both current angles to the
+  //next iteration of both angles
+  //we have already rotate to the correct location
+  void drawTorusPixel() {
+    pushMatrix();
+    rotateY(-PI / 2);
+    float circumfY = TWO_PI * subMag;
+    float baseY = (circumfY / aSubChange);
+    float baseR = 5;
+    beginShape();
+    
+    vertex(baseY, baseR, 0);
+    vertex(-baseY, baseR, 0);
+    vertex(-baseY, -baseR, 0);
+    vertex(baseY, -baseR, 0);
+    endShape();
     popMatrix();
   }
 
@@ -134,30 +154,30 @@ public class Particle {
     float baseR = r * .5;
     float will = l;
 
-    //beginShape(TRIANGLES);
-    //vertex(-baseR, -baseR, -baseR);
-    //vertex( baseR, -baseR, -baseR);
-    //vertex(   0, 0, will * r);
+    beginShape(TRIANGLES);
+    vertex(-baseR, -baseR, 0);
+    vertex( baseR, -baseR, 0);
+    vertex(   0, 0, will * r);
 
-    //vertex( baseR, -baseR, -baseR);
-    //vertex( baseR, baseR, -baseR);
-    //vertex(   0, 0, will * r);
+    vertex( baseR, -baseR, 0);
+    vertex( baseR, baseR, 0);
+    vertex(   0, 0, will * r);
 
-    //vertex( baseR, baseR, -baseR);
-    //vertex(-baseR, baseR, -baseR);
-    //vertex(   0, 0, will * r);
+    vertex( baseR, baseR, 0);
+    vertex(-baseR, baseR, 0);
+    vertex(   0, 0, will * r);
 
-    //vertex(-baseR, baseR, -baseR);
-    //vertex(-baseR, -baseR, -baseR);
-    //vertex(  0, 0, will * r);
+    vertex(-baseR, baseR, 0);
+    vertex(-baseR, -baseR, 0);
+    vertex(  0, 0, will * r);
 
-    //endShape(CLOSE);
+    endShape(CLOSE);
     
     beginShape();
-    vertex(baseR, baseR, -baseR);
-    vertex(-baseR, baseR, -baseR);
-    vertex(-baseR, -baseR, -baseR);
-    vertex(baseR, -baseR, -baseR);
+    vertex(baseR, baseR, 0);
+    vertex(-baseR, baseR, 0);
+    vertex(-baseR, -baseR, 0);
+    vertex(baseR, -baseR, 0);
     endShape();
   }
 
@@ -174,8 +194,8 @@ public class Particle {
     //theTempR = abs(theTempR);
     //theTempR = map(theTempR, 0, 1, 1, particleSize);
     
-    float val = map((acc.heading() + 2 * TWO_PI) % TWO_PI, 0, TWO_PI, 0, 255);
-    fill(val, 255, val);
+    float val = map((acc.heading() + 3 * TWO_PI) % TWO_PI, 0, TWO_PI, 0, colors.size() - 1);
+    fill(getColor(val));
 
   }
 

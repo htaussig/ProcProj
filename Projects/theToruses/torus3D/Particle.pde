@@ -124,29 +124,29 @@ public class Particle {
     float will = l;
 
     beginShape(TRIANGLES);
-    vertex(-baseR, -baseR, -baseR);
-    vertex( baseR, -baseR, -baseR);
+    vertex(-baseR, -baseR, 0);
+    vertex( baseR, -baseR, 0);
     vertex(   0, 0, will * r);
 
-    vertex( baseR, -baseR, -baseR);
-    vertex( baseR, baseR, -baseR);
+    vertex( baseR, -baseR, 0);
+    vertex( baseR, baseR, 0);
     vertex(   0, 0, will * r);
 
-    vertex( baseR, baseR, -baseR);
-    vertex(-baseR, baseR, -baseR);
+    vertex( baseR, baseR, 0);
+    vertex(-baseR, baseR, 0);
     vertex(   0, 0, will * r);
 
-    vertex(-baseR, baseR, -baseR);
-    vertex(-baseR, -baseR, -baseR);
+    vertex(-baseR, baseR, 0);
+    vertex(-baseR, -baseR, 0);
     vertex(  0, 0, will * r);
 
     endShape(CLOSE);
     
     beginShape();
-    vertex(baseR, baseR, -baseR);
-    vertex(-baseR, baseR, -baseR);
-    vertex(-baseR, -baseR, -baseR);
-    vertex(baseR, -baseR, -baseR);
+    vertex(baseR, baseR, 0);
+    vertex(-baseR, baseR, 0);
+    vertex(-baseR, -baseR, 0);
+    vertex(baseR, -baseR, 0);
     endShape();
   }
 

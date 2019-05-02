@@ -2,8 +2,8 @@
 //Take @shiffman's flowfield, map x and y to the two angles of a torus, and turn the particles into pyramids that point inwards. Code here: https://bit.ly/2VkigJ0   #processing #generative.
 
 int rows, cols;
-ArrayList<Particle> particles = new ArrayList<Particle>();
-PVector[] flowField;
+PVector[][] points;
+Float[][] flowField;
 ArrayList<Integer> colors = new ArrayList<Integer>();
 float colIndex = 0;
 private static int NUMCOLS = 2;
@@ -82,8 +82,8 @@ float particleSize = 15;
 //camera stuff
 float camRotSpeed = 1/350.0;
 
-float mainRows = 200;
-float subCols = 200;
+int mainRows = 100;
+int subCols = 100;
 float aMainChange, aSubChange;
 
 float pixelDX, pixelDY;
@@ -91,108 +91,82 @@ float pixelDX, pixelDY;
 float circumfY;
 float baseY;
 
+Pixel[][] torusPixels;
+
 OpenSimplexNoise noise;
 void setup() {
-  
+
   size(1000, 1000, P3D);
   frameRate(60);
   //colorMode(HSB, 255, 100, 100);
   background(0);
-  
+
   calculateChanges();
-  
+
+  points = new PVector[mainRows][subCols];
   for (float x = 0; x < width; x += pixelDX) {
     for (float y = 0; y < height; y += pixelDY) {
-      particles.add(new Particle(x, y));
+      points[(int)(x / pixelDX)][(int) (y / pixelDY)] = getPVector(x, y);
     }
   }
-  
+
+  initTorusPixels();
+
   if (seed == 0) {
     seed = (int) random(-1000000, 1000000);
   }
   randomSeed(seed);
   noiseSeed(seed);
   noise = new OpenSimplexNoise(seed);
-  
-  rows = (int) (height / scl + 1);
-  cols = (int) (width / scl + 1);
-  flowField = new PVector[cols * rows];
+
+  //rows = (int) (height / scl + 1);
+  //cols = (int) (width / scl + 1);
+  flowField = new Float[mainRows][subCols];
 
   /*for(int i = 0; i < NUMCOLS; i++){
    //colors.add(color(random(255), random(255), random(255), 2));
    colors.add(color(random(255), 125, 255, 2));
    }*/
-  colors.add(color(255));
-  colors.add(color(8, 255, 236));
   colors.add(color(0));
+  //colors.add(color(8, 255, 236));
+  //colors.add(color(0));
   colors.add(color(252, 23, 249));
   colors.add(color(255));
   //smooth(8)
-
 }
 
 void draw() {
   //if (lineMode) {
   background(0);
   //}
-
-    lights();
-    
-  directionalLight(255, 255, 255, 1, 1, 1);
-  //directionalLight(255, 255, 255, 1, 0, 0);
-  //directionalLight(255, 255, 255, -1, 1, 0);
-  //directionalLight(255, 255, 255, 0, -1, -1);
-
-  //ortho();
-  translate(width / 2, height / 2, -200);
-  rotateX(frameCount * camRotSpeed);
-  rotateZ(frameCount * camRotSpeed);
-  //rotateX(PI / 6);
-  //rotateY(PI / 7);
+ 
+  lightsCamerasAction();
   
-
-
-  
-  float yoff = 0;
-
-  for (int y = 0; y < rows; y++) {
-    //float xoff = 0;
-    for (int x = 0; x < cols; x++) {
-      int index = (int) (x + (y * cols));
-      float val = getNoiseValue((float) (x + moveDiffX) % (cols), (float) (y + moveDiffY) % (rows), zoffInit);
-      //val = map(val, 0, 1, 100, 255);
-
-      //multiply by 1.3 because the values don't get too close to 0 and 1
-      float angle = map(val, -.8, .8, 0, TWO_PI) * randomMulti;
-      PVector v = PVector.fromAngle(angle);
-      v.setMag(10);
-      flowField[index] = v;
-      //fill(val, 100, 100);
-      //noStroke();
-      //rect(x * scl, y * scl, scl, scl);
-      //xoff += inc;
-
-      if (lineMode) {
-        stroke(255);
-        pushMatrix();
-        translate(x * scl, y * scl);
-        rotate(v.heading());
-        strokeWeight(1);
-        stroke(255);
-        line(0, 0, scl, 0);
-        popMatrix();
-      }
-    }
-    //yoff += inc;
-  }
+  recalculateNoise();
   moveDonut();
 
-  for (Particle particle : particles) {
-    particle.follow(flowField);
-    particle.update();
-    particle.display(); 
-    particle.edges();
+  for(int i = 0; i < mainRows; i++){
+    for(int j = 0; j < subCols; j++){
+      torusPixels[i][j].display();
+    }
   }
+
+  //for (PVector[] ptArr : points) {
+  //  for (PVector p : ptArr) {
+  //    //println(i++);
+  //    //println(p.x, p.y, p.z);
+  //    pushMatrix();
+
+  //    translate(p.x, p.y, p.z);
+
+  //    fill(255);
+  //    //stroke(255);
+  //    noStroke();
+  //    sphere(15); 
+
+  //    popMatrix();
+  //  }
+  //}
   colIndex += COLINC;
 
   //moveDiffX += moveDiffDx;
@@ -204,12 +178,75 @@ void draw() {
   }
 }
 
-void calculateChanges(){
+void lightsCamerasAction(){
+ 
+  lights();
+
+  directionalLight(255, 255, 255, 1, 1, 1);
+  //directionalLight(255, 255, 255, 1, 0, 0);
+  //directionalLight(255, 255, 255, -1, 1, 0);
+  //directionalLight(255, 255, 255, 0, -1, -1);
+
+  //ortho();
+  translate(width / 2, height / 2, -200);
+  rotateX(frameCount * camRotSpeed);
+  rotateZ(frameCount * camRotSpeed);
+  //rotateX(PI / 6);
+  //rotateY(PI / 7);
+
+}
+
+void recalculateNoise(){
+  for (int y = 0; y < mainRows; y++) {
+    //float xoff = 0;
+    for (int x = 0; x < subCols; x++) {
+      int index = (int) (x + (y * cols));
+      float val = getNoiseValue((float) (x + moveDiffX) % (cols), (float) (y + moveDiffY) % (rows), 0);
+      //val = map(val, 0, 1, 100, 255);
+
+      //multiply by 1.3 because the values don't get too close to 0 and 1
+      //float val = map(val, -.8, .8, 0, TWO_PI) * randomMulti;
+      //PVector v = PVector.fromAngle(angle);
+      //v.setMag(10);
+      flowField[y][x] = val;
+      //fill(val, 100, 100);
+      //noStroke();
+      //rect(x * scl, y * scl, scl, scl);
+      //xoff += inc;
+
+    }
+    //yoff += inc;
+  }
+}
+
+//mainRows, subCols
+void initTorusPixels() {
+  torusPixels = new Pixel[mainRows][subCols];
+
+  //PVector topLeft = points[0][0];
+  //PVector topRight = points[0][1];
+  float row = 0;
+  for (int i = 0; i < points.length; i++) {
+    for(int j = 0; j < points[0].length; j++){
+      int r = (i + 1) % mainRows;
+      int c = (j + 1) % subCols;
+      PVector topLeft = points[i][j];
+      PVector topRight = points[i][c];
+      PVector botLeft = points[r][j];
+      PVector botRight = points[r][c];
+      //could change the first index to where the value actually is but shouldn't matter too much
+      PVector[] pix = {topLeft, topLeft, topRight, botRight, botLeft};
+      torusPixels[i][j] = new Pixel(pix);
+    }
+  }
+}
+
+void calculateChanges() {
   aMainChange = TWO_PI / mainRows;
   aSubChange = TWO_PI / subCols; 
   pixelDX = width / mainRows;
   pixelDY = height / subCols;
-  
+
   //could calculate this more exactly considering the fact that these are
   //chords across a circle and not actually curved
   circumfY = TWO_PI * subMag * drawMag;
@@ -234,13 +271,39 @@ void moveDonut() {
   //xoffInit += speedChange;
 
   //different on left and right sides
-  yoffInit += speedChange;
-  
+  //yoffInit += speedChange;
+
   //moves stuff upwards
-  //zoffInit += speedChange;
+  zoffInit += speedChange;
 }
 
-float getNoiseValue(float x, float y, float zoff) {
+PVector getPVector(float x, float y) {
+
+  float aMain = map(x, 0, width, 0, TWO_PI);
+  float aSub = map(y, 0, height, 0, TWO_PI);
+
+  float xoff = 0;
+  float yoff = 0;
+
+  float axVal = cos(aMain);
+  float ayVal = sin(aMain);
+
+  xoff = mainMag * axVal;
+  yoff = mainMag * ayVal;
+
+  float axyVal = cos(aSub);
+  xoff += (axVal)  * subMag * axyVal;
+  yoff += (ayVal)  * subMag * axyVal;
+
+  //zoff used to have a preset value, will this get messed up? don't think so
+  float zoff = -sin(aSub) * subMag;
+
+  PVector p = new PVector(xoff  * drawMag, yoff  * drawMag, zoff  * drawMag);
+
+  return p;
+}
+
+float getNoiseValue(float x, float y, float z) {
 
   //float aMain = map(y, 0, rows - 1, 0, TWO_PI);
   //float aSub = map(x, 0, cols - 1, 0, TWO_PI);
@@ -248,8 +311,8 @@ float getNoiseValue(float x, float y, float zoff) {
   float aMain = map(x, 0, cols - 1, 0, TWO_PI);
   float aSub = map(y, 0, rows - 1, 0, TWO_PI);
 
-  float xoff = 0;
-  float yoff = 0;
+  float xoff = x;
+  float yoff = x;
 
   float axVal = cos(aMain);
   float ayVal = sin(aMain);
@@ -265,9 +328,14 @@ float getNoiseValue(float x, float y, float zoff) {
   float axyVal = cos(aSub);
   xoff += (axVal)  * subMag * axyVal;
   yoff += (ayVal)  * subMag * axyVal;
-  zoff += -sin(aSub) * subMag;
+  float zoff = -sin(aSub) * subMag;
 
-  return (float) noise.eval((xoff + xoffInit) * density, (yoff + yoffInit) * density, (zoff) * density);
+  return (float) noise.eval((xoff + xoffInit) * density, (yoff + yoffInit) * density, (zoff + zoffInit) * density);
+}
+
+float getNoiseValueBasic(float x, float y, float z) {
+
+  return (float) noise.eval((x + xoffInit) * density, (y + yoffInit) * density, (z + zoffInit) * density);
 }
 
 void keyPressed() {

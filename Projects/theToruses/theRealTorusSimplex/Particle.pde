@@ -9,7 +9,7 @@ public class Particle {
   PVector prevPos;
   float h;
   boolean increasing;
-  
+
   float theTempR;
 
   public Particle() {
@@ -21,7 +21,7 @@ public class Particle {
     increasing = true;
     theTempR = particleSize;
   }
-  
+
   public Particle(float x, float y) {
     pos = new PVector(x, y);
     vel = new PVector(0, 0);
@@ -116,11 +116,11 @@ public class Particle {
 
     //rotation for sub axis
     rotateY(aSub);
-    
+
     //box(12);
     //drawTetra(particleSize, 5.5);
     //drawTetra(particleSize, 5.5);
-    drawTorusPixel();
+    drawTorusPixel(aSub);
 
     //sphereDetail(4);
     //sphere(8);
@@ -131,26 +131,35 @@ public class Particle {
   //so a torus pixel is gonna go from the both current angles to the
   //next iteration of both angles
   //we have already rotate to the correct location
-  void drawTorusPixel() {
+  void drawTorusPixel(float aSub) {
     pushMatrix();
     rotateY(-PI / 2);
-    float circumfY = TWO_PI * subMag;
-    float baseY = (circumfY / aSubChange);
-    float baseR = 5;
+    float baseX = getBaseX(aSub);
     beginShape();
-    
-    vertex(baseY, baseR, 0);
-    vertex(-baseY, baseR, 0);
-    vertex(-baseY, -baseR, 0);
-    vertex(baseY, -baseR, 0);
+
+    vertex(baseY, baseX, 0);
+    vertex(-baseY, baseX, 0);
+    vertex(-baseY, -baseX, 0);
+    vertex(baseY, -baseX, 0);
     endShape();
     popMatrix();
+  }
+
+  float getBaseX(float aSub) {
+    
+    //could be sine or cosine
+    float theR = mainMag + cos(aSub) * subMag;
+    float circumfX = TWO_PI * theR * drawMag;
+    float baseX = circumfX / mainRows;
+    //not sure why you don't divide by two this time
+    baseX /= 2;
+    return baseX;
   }
 
   void drawTetra(float r, float l) {
     //println(r);
     rotateY(-PI / 2);
-    
+
     float baseR = r * .5;
     float will = l;
 
@@ -172,7 +181,7 @@ public class Particle {
     vertex(  0, 0, will * r);
 
     endShape(CLOSE);
-    
+
     beginShape();
     vertex(baseR, baseR, 0);
     vertex(-baseR, baseR, 0);
@@ -189,14 +198,13 @@ public class Particle {
 
     //colVal = (colVal + val2) % 255;
     //fill(colVal, 100, 100);
-    
+
     //theTempR = map(colVal, 0, 255, -1, 1);
     //theTempR = abs(theTempR);
     //theTempR = map(theTempR, 0, 1, 1, particleSize);
-    
+
     float val = map((acc.heading() + 3 * TWO_PI) % TWO_PI, 0, TWO_PI, 0, colors.size() - 1);
     fill(getColor(val));
-
   }
 
 

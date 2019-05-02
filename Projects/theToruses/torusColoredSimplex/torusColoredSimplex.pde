@@ -19,7 +19,7 @@ float yoffInit = 0;
 //if seed is set to 0, random seed, otherwise this value gets used
 //19498   .1
 //-1861    .2
-int seed = 19498;
+int seed = 0;
 
 /// things to change for fun//////////////////////////////////////////////////////////////////////////////
 

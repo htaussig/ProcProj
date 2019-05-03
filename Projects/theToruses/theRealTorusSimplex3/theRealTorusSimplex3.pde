@@ -94,6 +94,11 @@ float baseY;
 Pixel[][] torusPixels;
 
 OpenSimplexNoise noise;
+
+//percentage of the transformation
+float dP = 0.01;
+float p = dP;
+
 void setup() {
 
   size(1000, 1000, P3D);
@@ -104,9 +109,11 @@ void setup() {
   calculateChanges();
 
   points = new PVector[mainRows][subCols];
-  for (float x = 0; x < width; x += pixelDX) {
-    for (float y = 0; y < height; y += pixelDY) {
-      points[(int)(x / pixelDX)][(int) (y / pixelDY)] = getPVectorTorus(x, y);
+  for (int x = 0; x < mainRows; x++) {
+    for (int y = 0; y < subCols; y++) {
+      float i = x * pixelDX;
+      float j = y * pixelDY;
+      points[x][y] = getPVectorTorus(i, j);
     }
   }
 
@@ -127,9 +134,9 @@ void setup() {
    //colors.add(color(random(255), random(255), random(255), 2));
    colors.add(color(random(255), 125, 255, 2));
    }*/
-  
+
   addColors();
-  
+
   //smooth(8)
 }
 
@@ -137,14 +144,14 @@ void draw() {
   //if (lineMode) {
   background(0);
   //}
- 
+
   lightsCamerasAction();
-  
+
   recalculateNoise();
   moveDonut();
 
-  for(int i = 0; i < mainRows; i++){
-    for(int j = 0; j < subCols; j++){
+  for (int i = 0; i < mainRows; i++) {
+    for (int j = 0; j < subCols; j++) {
       torusPixels[i][j].display();
     }
   }
@@ -174,44 +181,60 @@ void draw() {
   if (RECORDING && frames % 2 == 0) {
     saveFrame("movie/torusColored-######.png");
   }
+
+  movePoints();
 }
 
-void movePoints(){
-  //for (float x = 0; x < width; x += pixelDX) {
-  //  for (float y = 0; y < height; y += pixelDY) {
-  //    points[(int)(x / pixelDX)][(int) (y / pixelDY)] = getPVectorTorus(x, y);
-  //  }
-  //}
+void movePoints() {
+  if (p < 1 - abs(dP * 2) && p > 0) {
+    p += dP;
+  } else {
+    dP *= -1;
+    p += dP;
+  }
   
-  HERERERE
-  go through all the points and get the spherepoint
-  getPVectorSphere(x,y);
-  
+  println(p, dP);
+
+
+
+  for (int x = 0; x < mainRows; x++) {
+    for (int y = 0; y < subCols; y++) {
+      float i = x * pixelDX;
+      float j = y * pixelDY;
+      PVector p1 = getPVectorTorus(i, j);
+      PVector p2 = getPVectorSphere(i, j);
+      float x3 = p1.x * (p - 1) + p2.x * p;
+      float y3 = p1.y * (p - 1) + p2.y * p;
+      float z3 = p1.z * (p - 1) + p2.z * p;
+      points[x][y].set(x3, y3, z3);
+      // getPVectorSphere(i, j)
+    }
+  }
 }
 
-void addColors(){
+void addColors() {
   //colors.add(color(0));
   ////colors.add(color(8, 255, 236));
   ////colors.add(color(0));
   //colors.add(color(252, 23, 249));
   //colors.add(color(255));
-  
+
   //colors.add(color(0));
-  
+
   //colors.add(color(0));
   //colors.add(color(#2A28C6));
   //colors.add(color(#048618)); 
   colors.add(color(#2B2A48));
-  
+
   //colors.add(color(#31482A));
-  
+
   colors.add(color(255));
-    
+
   //colors.add(color(255));
 }
 
-void lightsCamerasAction(){
- 
+void lightsCamerasAction() {
+
   //lights();
 
   directionalLight(230, 230, 230, 1, 1, 1);
@@ -225,10 +248,9 @@ void lightsCamerasAction(){
   rotateZ(frameCount * camRotSpeed);
   //rotateX(PI / 6);
   //rotateY(PI / 7);
-
 }
 
-void recalculateNoise(){
+void recalculateNoise() {
   for (int y = 0; y < mainRows; y++) {
     //float xoff = 0;
     for (int x = 0; x < subCols; x++) {
@@ -245,7 +267,6 @@ void recalculateNoise(){
       //noStroke();
       //rect(x * scl, y * scl, scl, scl);
       //xoff += inc;
-
     }
     //yoff += inc;
   }
@@ -259,7 +280,7 @@ void initTorusPixels() {
   //PVector topRight = points[0][1];
   float row = 0;
   for (int i = 0; i < points.length; i++) {
-    for(int j = 0; j < points[0].length; j++){
+    for (int j = 0; j < points[0].length; j++) {
       int r = (i + 1) % mainRows;
       int c = (j + 1) % subCols;
       PVector topLeft = points[i][j];
@@ -269,6 +290,7 @@ void initTorusPixels() {
       //could change the first index to where the value actually is but shouldn't matter too much
       PVector[] pix = {topLeft, topLeft, topRight, botRight, botLeft};
       torusPixels[i][j] = new Pixel(pix);
+      //points[1][1] = new PVector(1, 1,1);
     }
   }
 }
@@ -309,15 +331,19 @@ void moveDonut() {
   zoffInit += speedChange;
 }
 
-PVector getPVectorSphere(float x, float y){
+PVector getPVectorSphere(float x, float y) {
   float aMain = map(x, 0, width, 0, TWO_PI);
+
+  //should be just to PI but I think we might need TWO_PI for the torus conversion
   float aSub = map(y, 0, height, 0, TWO_PI);
-  
+
   float xoff = sin(aSub) * cos(aMain) * drawMag;
   float yoff = sin(aSub) * sin(aMain) * drawMag;
-  float zoff = cos(aMain) * drawMag;
-  
+  float zoff = cos(aSub) * drawMag;
+
   PVector p = new PVector(xoff, yoff, zoff);
+
+  return p;
 }
 
 PVector getPVectorTorus(float x, float y) {

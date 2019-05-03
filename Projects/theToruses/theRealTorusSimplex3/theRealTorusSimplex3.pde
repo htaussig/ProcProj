@@ -106,7 +106,7 @@ void setup() {
   points = new PVector[mainRows][subCols];
   for (float x = 0; x < width; x += pixelDX) {
     for (float y = 0; y < height; y += pixelDY) {
-      points[(int)(x / pixelDX)][(int) (y / pixelDY)] = getPVector(x, y);
+      points[(int)(x / pixelDX)][(int) (y / pixelDY)] = getPVectorTorus(x, y);
     }
   }
 
@@ -174,6 +174,19 @@ void draw() {
   if (RECORDING && frames % 2 == 0) {
     saveFrame("movie/torusColored-######.png");
   }
+}
+
+void movePoints(){
+  //for (float x = 0; x < width; x += pixelDX) {
+  //  for (float y = 0; y < height; y += pixelDY) {
+  //    points[(int)(x / pixelDX)][(int) (y / pixelDY)] = getPVectorTorus(x, y);
+  //  }
+  //}
+  
+  HERERERE
+  go through all the points and get the spherepoint
+  getPVectorSphere(x,y);
+  
 }
 
 void addColors(){
@@ -296,7 +309,18 @@ void moveDonut() {
   zoffInit += speedChange;
 }
 
-PVector getPVector(float x, float y) {
+PVector getPVectorSphere(float x, float y){
+  float aMain = map(x, 0, width, 0, TWO_PI);
+  float aSub = map(y, 0, height, 0, TWO_PI);
+  
+  float xoff = sin(aSub) * cos(aMain) * drawMag;
+  float yoff = sin(aSub) * sin(aMain) * drawMag;
+  float zoff = cos(aMain) * drawMag;
+  
+  PVector p = new PVector(xoff, yoff, zoff);
+}
+
+PVector getPVectorTorus(float x, float y) {
 
   float aMain = map(x, 0, width, 0, TWO_PI);
   float aSub = map(y, 0, height, 0, TWO_PI);

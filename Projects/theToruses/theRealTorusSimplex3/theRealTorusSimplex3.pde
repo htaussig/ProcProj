@@ -80,7 +80,7 @@ float speedChange = .01;
 float particleSize = 15;
 
 //camera stuff
-float camRotSpeed = 1/300.0;
+float camRotSpeed = 1/100.0;
 
 int mainRows = 100;
 int subCols = 100;
@@ -186,14 +186,14 @@ void draw() {
 }
 
 void movePoints() {
-  if (p < 1 - abs(dP * 2) && p > 0) {
+  if (p < 1 && p > 0) {
     p += dP;
   } else {
     dP *= -1;
     p += dP;
   }
   
-  println(p, dP);
+  //println(p, dP);
 
 
 
@@ -336,10 +336,16 @@ PVector getPVectorSphere(float x, float y) {
 
   //should be just to PI but I think we might need TWO_PI for the torus conversion
   float aSub = map(y, 0, height, 0, TWO_PI);
+  
+  float mag = drawMag;
+  if(sin(aSub) * sin(aMain) < 0){
+    mag -= 1;
+  }
 
-  float xoff = sin(aSub) * cos(aMain) * drawMag;
-  float yoff = sin(aSub) * sin(aMain) * drawMag;
-  float zoff = cos(aSub) * drawMag;
+  float xoff = sin(aSub) * cos(aMain) * mag;
+  float yoff = sin(aSub) * sin(aMain) * mag;
+  float zoff = cos(aSub) * mag;
+  
 
   PVector p = new PVector(xoff, yoff, zoff);
 

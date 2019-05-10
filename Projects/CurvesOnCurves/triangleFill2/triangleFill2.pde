@@ -2,8 +2,8 @@ float pointD = 5;
 float col = 0;
 float border = 105;
 
-float minCircRadius = 10;
-float maxCircRadius = 20;
+float minCircRadius = 1;
+float maxCircRadius = 2;
 float minDistance = 3;
 
 ArrayList<Vertex> points;
@@ -12,6 +12,8 @@ boolean showVertex;
 
 int numConnections = 3;
 //float num = 0;
+
+float numPoints = 200;
 
 void setup() {
   size(800, 800);
@@ -55,7 +57,7 @@ void display() {
 }
 
 void createPoints() {
-  while (nextPoint(0)) {
+  while (nextPoint(0) && points.size() < numPoints) {
   }
 }
 
@@ -63,9 +65,13 @@ boolean nextPoint(int num) {
   if (num >= 100) {
     return false;
   }
+  
+  float xy = pow(random(1), 5) * (width + height) / 2; 
+  float x = random(xy); 
+  float y = xy - x;
 
-  float x = random(border, width - border); 
-  float y = random(border, height - border);
+  //float x = random(border, width - border); 
+  //float y = random(border, height - border);
   float r = random(minCircRadius, maxCircRadius);
   Vertex v1 = new Vertex(new PVector(x, y), r);
 

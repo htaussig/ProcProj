@@ -39,8 +39,8 @@ public class Pixel{
     for(int i = 1; i < 5; i++){
       PVector p = points[i];
       float v = getNoiseValueBasic(p.x/drawMag, p.y/ drawMag, p.z/ drawMag);
-      float magMult = map(v, -1, 1, .8, 1.2);
-      //float magMult = 1;
+      //float magMult = map(v, -1, 1, .8, 1.2);
+      float magMult = 1;
       vertex(p.x * magMult, p.y * magMult, p.z * magMult);
     }
     

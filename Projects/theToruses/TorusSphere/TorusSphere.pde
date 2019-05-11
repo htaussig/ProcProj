@@ -47,7 +47,7 @@ float scl = 5;
 //this value matters a lot!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
 //how far apart each index is in the flowfield values
 //.5 <-> .1
-float density = 2;
+float density = 2.1;
 //1.3
 
 //these two just slide the picture in each direction
@@ -82,8 +82,8 @@ float particleSize = 15;
 //camera stuff
 float camRotSpeed = 1/100.0;
 
-int mainRows = 100;
-int subCols = 100;
+int mainRows = 125;
+int subCols = 125;
 float aMainChange, aSubChange;
 
 float pixelDX, pixelDY;
@@ -98,6 +98,9 @@ OpenSimplexNoise noise;
 //percentage of the transformation
 float dP = 0.01;
 float p = dP;
+
+Palette pal = new Palette("37#FBF9FA26#FD005417#A8003817#2B2024");
+
 
 void setup() {
 
@@ -178,59 +181,83 @@ void draw() {
   //moveDiffY += moveDiffDy;
 
   frames++;
-  if (RECORDING && frames % 2 == 0) {
+  if (RECORDING && frames % 1 == 0) {
     saveFrame("movie/torusColored-######.png");
+    println("time: " + frames / 60.0);
   }
 
   movePoints();
+  
 }
 
 void movePoints() {
-  if (p < 1 && p > 0) {
+  if (p < 1 - (3 * dP) && p > 0) {
     p += dP;
   } else {
     dP *= -1;
     p += dP;
   }
-  
+  float t = easeInOutQuad(p);
   //println(p, dP);
-
-
-
   for (int x = 0; x < mainRows; x++) {
     for (int y = 0; y < subCols; y++) {
       float i = x * pixelDX;
       float j = y * pixelDY;
       PVector p1 = getPVectorTorus(i, j);
       PVector p2 = getPVectorSphere(i, j);
-      float x3 = p1.x * (p - 1) + p2.x * p;
-      float y3 = p1.y * (p - 1) + p2.y * p;
-      float z3 = p1.z * (p - 1) + p2.z * p;
+      float x3 = p1.x * (t - 1) + p2.x * t;
+      float y3 = p1.y * (t - 1) + p2.y * t;
+      float z3 = p1.z * (t - 1) + p2.z * t;
       points[x][y].set(x3, y3, z3);
       // getPVectorSphere(i, j)
     }
   }
 }
 
+float easeInOutQuad(float t){
+  return t<.5 ? 2*t*t : -1+(4-2*t)*t;
+}
+
 void addColors() {
+  //pink to blue
   //colors.add(color(0));
-  ////colors.add(color(8, 255, 236));
-  ////colors.add(color(0));
+  //colors.add(color(8, 255, 236));
+  //colors.add(color(0));
   //colors.add(color(252, 23, 249));
   //colors.add(color(255));
+  
 
   //colors.add(color(0));
 
   //colors.add(color(0));
   //colors.add(color(#2A28C6));
   //colors.add(color(#048618)); 
-  colors.add(color(#2B2A48));
+  //colors.add(color(#2B2A48));
 
   //colors.add(color(#31482A));
 
-  colors.add(color(255));
+  //colors.add(color(255));
 
   //colors.add(color(255));
+  
+  //ahh
+  colors.add(color(#2C0164));
+  colors.add(color(#7208FF));
+  colors.add(color(#05B7F5));
+  //colors.add(color(#19B7D1));
+  colors.add(color(#08FF11));
+  colors.add(color(255));
+  
+  //sun mode?
+  //colors.add(color(255));
+  //colors.add(color(#FFCE08));
+  //colors.add(color(#EA7B0C));
+  //colors.add(color(#EA0C0C));
+  //colors.add(color(#7C0000));
+  
+  //some mode
+  //"37#FBF9FA26#FD005417#A8003817#2B2024"
+  //pal.addColors(colors);
 }
 
 void lightsCamerasAction() {
@@ -288,7 +315,7 @@ void initTorusPixels() {
       PVector botLeft = points[r][j];
       PVector botRight = points[r][c];
       //could change the first index to where the value actually is but shouldn't matter too much
-      PVector[] pix = {topLeft, topLeft, topRight, botRight, botLeft};
+      PVector[] pix = {topLeft, topLeft, topRight, botLeft, botRight};
       torusPixels[i][j] = new Pixel(pix);
       //points[1][1] = new PVector(1, 1,1);
     }
@@ -335,12 +362,15 @@ PVector getPVectorSphere(float x, float y) {
   float aMain = map(x, 0, width, 0, TWO_PI);
 
   //should be just to PI but I think we might need TWO_PI for the torus conversion
-  float aSub = map(y, 0, height, 0, TWO_PI);
+  float aSub = map(y, 0, height, PI, 3 * PI);
   
   float mag = drawMag;
-  if(sin(aSub) * sin(aMain) < 0){
-    mag -= 1;
-  }
+  //if(aSub > TWO_PI){
+  //  mag -= 10;
+  //}
+  //if((aSub < 3 * PI / 2 || aSub > 5 * PI / 2)){
+  //  mag += 10;
+  //}
 
   float xoff = sin(aSub) * cos(aMain) * mag;
   float yoff = sin(aSub) * sin(aMain) * mag;

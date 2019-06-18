@@ -2,10 +2,10 @@
 //GenerateSerendipity
 //Jan 2019
 
-String fileName = "yeet.png";
+String fileName = "cool.png";
 PImage img;
 
-int numPoints = 4430;
+int numPoints = 1430;
 PVector[] points;
 
 color[][] thePix;
@@ -22,10 +22,10 @@ boolean SMOOTH = true;
 float DEV = 21;
 
 //can use my PalletteBook Sketch, click on the pallettes, and copy them in here
-Palette pal = new Palette("37#2D405926#EA545517#F07B3F17#FFD460");
+Palette pal = new Palette("37#12E6C826#A287F4");
 
 void setup() {
-  size(480, 640);
+  size(300, 300);
   img = loadImage(fileName);
 
   frameRate(3000);
@@ -37,7 +37,6 @@ void setup() {
   initThePix();
 
   colorMode(RGB);
-
 }
 
 void initPoints() {
@@ -87,20 +86,41 @@ boolean isPoint(float x, float y) {
 }
 
 void draw() {
-  image(img, 0, 0);
-  //print("y");
-
+  //if (frameCount % 10 == 0) {
+    image(img, 0, 0);
+    //print("y");
+  //}
   trySpread();
 
-  background(0);
+  
 
-  display();
+  //if (frameCount % 10 == 0) {
+    background(0);
+    display();
+  //}
+  
 }
 
 void trySpread() {
 
   for (int x = 0; x < width; x++) {
     for (int y = 0; y < height; y++) {
+      //basically does it have a color
+      //not sure if we want the second conditional here
+      if (thePix[x][y] != -1) {
+        if (brightness(img.pixels[x + (y * width)]) > MINBRIGHT) {
+          //print(x, y);
+          //spreads color and that one will spread color again bc they don't update all at once
+          spreadColor(x, y);
+        } else {
+          thePix[x][y] = -1;
+        }
+      }
+    }
+  }
+  
+  for (int x = width - 1; x > 0; x--) {
+    for (int y = height - 1; y > 0; y--) {
       //basically does it have a color
       //not sure if we want the second conditional here
       if (thePix[x][y] != -1) {

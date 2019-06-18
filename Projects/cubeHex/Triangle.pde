@@ -7,6 +7,8 @@ public class Triangle {
   
   //the position of the vertex we are currently rotating around
   PVector vertPos = null;
+  
+  int turns = 0;
 
   public Triangle(float x_, float y_, float triR_, float a_) {
     x = x_;
@@ -34,16 +36,17 @@ public class Triangle {
       a += radians(60);
       setVertPos(a);
       specialA = 0;
+      turns++;
       //print("twist");
     }
     
     translate(vertPos.x, vertPos.y);
     rotate(specialA);
     float easeVal = map(specialA, 0, radians(65), .85, .18);
-    println(easeVal);
+    //println(easeVal);
     
     float ease = ease(easeVal);
-    print(ease); 
+    //print(ease); 
     
     specialA += -radians(ease * specialDA);
   }

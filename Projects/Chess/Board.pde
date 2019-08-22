@@ -49,7 +49,10 @@ public class Board{
   }
   
   boolean hasPieceAt(int file, int rank){
-    return squares[rank][file].hasPiece();
+    if(file > 7 || file < 0 || rank > 7 || rank < 0){
+      return false;
+    }
+    return squares[file][rank].hasPiece();
   }
   
   Square getSquare(float x, float y, float screenW, float screenH){
@@ -66,7 +69,7 @@ public class Board{
     }
     
     int squareX = floor(x / sWidth);
-    int squareY = floor(y / sWidth);
+    int squareY = 7 - floor(y / sWidth);
     
     return squares[squareX][squareY];
   }
@@ -80,11 +83,30 @@ public class Board{
     }
   }
   
+  //stop displaying all moves
+  void resetDisplay(){
+    for(int i = 0; i < 8; i++){
+      for(int m = 0; m < 8; m++){
+        squares[i][m].isValidMove = false;
+      }
+    }
+  }
+  
   void display(){
     for(int i = 0; i < 8; i++){
+      float sWidth = boardW / 8.0;
+      
+      text(8 - i, ((WIDTH - boardW) / 2.0) - sWidth - 20, (((WIDTH - boardW) / 2) + sWidth * i) - sWidth / 2);
       for(int m = 0; m < 8; m++){
         squares[i][m].display();
       }
     }
   }
+}
+
+boolean isOnBoard(int f, int r){
+  if(f < 0 || f > 7 || r < 0 || r > 8){
+    return false; 
+  }
+  return true;
 }

@@ -26,13 +26,28 @@ public class Pawn extends Piece{
     ArrayList<Square> moves = new ArrayList<Square>();
     int direction = 1;
     
+    int numLoops = 1;
+    
     if(!isWhite){
       direction = -1;
+      if(rank == 6){
+        //you can move forward two spaces with your first pawn move
+        numLoops = 2;
+      }
+    }
+    else{
+      if(rank == 1){
+        numLoops = 2;
+      }
     }
     
-    noPieceAdd(moves, file, rank + direction, board);
+    //noPieceAdd(moves, file, rank + direction, board);
+    
     pieceAdd(moves, file + 1, rank + direction, board);
     pieceAdd(moves, file -1, rank + direction, board);
+    
+    
+    recursiveNoPieceAdd(moves, file, rank, 0, direction, numLoops);
     
     println("moves: " + getMovesString(moves));
     

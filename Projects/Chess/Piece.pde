@@ -1,6 +1,7 @@
 public abstract class Piece{
   
   int file, rank;
+  Square mySquare;
   
   public Piece(){
     
@@ -34,6 +35,51 @@ public abstract class Piece{
     if(board.hasPieceAt(newFile, newRank)){
       moves.add(board.squares[newFile][newRank]);
     }
+  }
+  
+  //stops when you get to the first piece, or meet the numLoops length
+  //for pawns
+  public void recursiveNoPieceAdd(ArrayList<Square> moves, int newFile, int newRank, int dx, int dy, int numLoops){
+    newFile += dx;
+    newRank += dy;
+    if(!board.hasPieceAt(newFile, newRank)){
+      moves.add(board.squares[newFile][newRank]);
+    }
+    else{
+      return;
+    }
+    
+    numLoops--;
+    if(numLoops == 0){
+      return;
+    }
+    else{
+      recursiveNoPieceAdd(moves, newFile, newRank,dx, dy, numLoops);
+    }
+  }
+  
+  //for all pieces other than pawns
+  public void recursivePieceAdd(ArrayList<Square> moves, int newFile, int newRank, int dx, int dy){
+    newFile += dx;
+    newRank += dy;
+    
+    if(!isOnBoard(newFile, newRank)){
+      return;
+    }
+    
+    if(!board.hasPieceAt(newFile, newRank)){
+      moves.add(board.squares[newFile][newRank]);
+    }
+    else{
+      moves.add(board.squares[newFile][newRank]);
+      return;
+    }
+    
+    recursivePieceAdd(moves, newFile, newRank, dx, dy);
+  }
+  
+  public void setSquare(Square s){
+    mySquare = s; 
   }
   
   

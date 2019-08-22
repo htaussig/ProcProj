@@ -6,9 +6,9 @@ float HEIGHT = 1000;
 float bWIDTH = 800;
 
 Board board;
-
+Square lastSquare;
 void setup(){
-  size(1000, 1000, P2D);
+  size(1000, 1000);
   
   board = new Board(bWIDTH);
   
@@ -23,12 +23,25 @@ void draw(){
 }
 
 void mousePressed(){
+  
   Square s = board.getSquare(mouseX, mouseY, WIDTH, HEIGHT);
-  if(s != null){
-    println(s.toString());
+  
+  if(s.isValidMove && lastSquare.hasPiece()){
+    lastSquare.movePiece(s);
+    board.resetDisplay();
   }
-  else{
-    println("no");
+  else{  
+    lastSquare = s;
+    
+    board.resetDisplay();
+    if(s != null){
+      println(s.toString());
+      board.displayMoves(s);
+    }
+    else{
+      println("no");
+    }
   }
-  board.displayMoves(s);
+
+  
 }

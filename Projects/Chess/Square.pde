@@ -24,11 +24,18 @@ public class Square{
     return piece != null;
   }
   
+  void movePiece(Square newSquare){    
+    newSquare.movePieceHere(piece);
+    
+    movePieceAway();
+  }
+  
   void movePieceHere(Piece movingPiece){
     if(piece != null){
       piece.getCaptured();
     }
     piece = movingPiece;
+    piece.setSquare(this);
   }
   
   void movePieceAway(){
@@ -70,8 +77,10 @@ public class Square{
       
       translate(w / 2, w / 2);
       
-      //fill(0, 35);
-      //ellipse(0, 0, 45, 45);
+      if(isValidMove){
+         fill(0, 35);
+         ellipse(0, 0, 45, 45);
+      }   
       
       if(piece != null){
         //translate(w / 2, w / 2);

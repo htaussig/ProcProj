@@ -1,7 +1,7 @@
 public class Bishop extends Piece{
 
-  public Bishop(boolean isWhite_, int file_, int rank_){
-    super(isWhite_, file_, rank_);
+  public Bishop(boolean isWhite_){
+    super(isWhite_);
   }
   
   public void display(){
@@ -29,13 +29,12 @@ public class Bishop extends Piece{
   
   public ArrayList<Square> getValidMoves(Board board){
     ArrayList<Square> moves = new ArrayList<Square>();
-    int direction = 1;
     
-    if(!isWhite){
-      direction = -1;
-    }
+    recursivePieceAdd(moves, getFile(), getRank(), -1, -1);
+    recursivePieceAdd(moves, getFile(), getRank(), -1, 1);
+    recursivePieceAdd(moves, getFile(), getRank(), 1, -1);
+    recursivePieceAdd(moves, getFile(), getRank(), 1, 1);
     
-    noPieceAdd(moves, file, rank + direction, board);
     
     return moves;
   }

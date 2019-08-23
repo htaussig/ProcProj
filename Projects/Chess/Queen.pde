@@ -1,7 +1,7 @@
 public class Queen extends Piece{
   
-  public Queen(boolean isWhite_, int file_, int rank_){
-    super(isWhite_, file_, rank_);
+  public Queen(boolean isWhite_){
+    super(isWhite_);
   }
   
   public void display(){
@@ -25,13 +25,19 @@ public class Queen extends Piece{
   
   public ArrayList<Square> getValidMoves(Board board){
     ArrayList<Square> moves = new ArrayList<Square>();
-    int direction = 1;
+
+    //queen is a rook and bishop combined
+    //rook
+    recursivePieceAdd(moves, getFile(), getRank(), 0, 1);
+    recursivePieceAdd(moves, getFile(), getRank(), 0, -1);
+    recursivePieceAdd(moves, getFile(), getRank(), 1, 0);
+    recursivePieceAdd(moves, getFile(), getRank(), -1, 0);
     
-    if(!isWhite){
-      direction = -1;
-    }
-    
-    noPieceAdd(moves, file, rank + direction, board);
+    //bishop
+    recursivePieceAdd(moves, getFile(), getRank(), -1, -1);
+    recursivePieceAdd(moves, getFile(), getRank(), -1, 1);
+    recursivePieceAdd(moves, getFile(), getRank(), 1, -1);
+    recursivePieceAdd(moves, getFile(), getRank(), 1, 1);
     
     return moves;
   }

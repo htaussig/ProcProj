@@ -1,7 +1,7 @@
 public class King extends Piece{
   
-  public King(boolean isWhite_, int file_, int rank_){
-    super(isWhite_, file_, rank_);
+  public King(boolean isWhite_){
+    super(isWhite_);
   }
   
   public void display(){
@@ -37,13 +37,18 @@ public class King extends Piece{
   
   public ArrayList<Square> getValidMoves(Board board){
     ArrayList<Square> moves = new ArrayList<Square>();
-    int direction = 1;
     
-    if(!isWhite){
-      direction = -1;
-    }
-    
-    noPieceAdd(moves, file, rank + direction, board);
+    //king is a rook and bishop combined for one loop
+    //rook
+    kingPieceAdd(moves, getFile(), getRank(), 0, 1);
+    kingPieceAdd(moves, getFile(), getRank(), 0, -1);
+    kingPieceAdd(moves, getFile(), getRank(), 1, 0);
+    kingPieceAdd(moves, getFile(), getRank(), -1, 0);
+    //bishop
+    kingPieceAdd(moves, getFile(), getRank(), -1, -1);
+    kingPieceAdd(moves, getFile(), getRank(), -1, 1);
+    kingPieceAdd(moves, getFile(), getRank(), 1, -1);
+    kingPieceAdd(moves, getFile(), getRank(), 1, 1);
     
     return moves;
   }

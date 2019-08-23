@@ -1,16 +1,13 @@
 public abstract class Piece{
   
-  int file, rank;
   Square mySquare;
   
   public Piece(){
     
   }
   
-  public Piece(boolean isWhite_, int file_, int rank_){
+  public Piece(boolean isWhite_){
     isWhite = isWhite_;
-    file = file_;
-    rank = rank_;
   }
   
   boolean isWhite;
@@ -32,7 +29,7 @@ public abstract class Piece{
   
   //only valid if there is a piece on this square
   public void pieceAdd(ArrayList<Square> moves, int newFile, int newRank, Board board){
-    if(board.hasPieceAt(newFile, newRank)){
+    if(board.hasPieceAt(newFile, newRank) && !isSameColor(board.getPiece(newFile, newRank))){
       moves.add(board.squares[newFile][newRank]);
     }
   }
@@ -42,6 +39,11 @@ public abstract class Piece{
   public void recursiveNoPieceAdd(ArrayList<Square> moves, int newFile, int newRank, int dx, int dy, int numLoops){
     newFile += dx;
     newRank += dy;
+    
+    if(!isOnBoard(newFile, newRank)){
+      return;
+    }
+    
     if(!board.hasPieceAt(newFile, newRank)){
       moves.add(board.squares[newFile][newRank]);
     }
@@ -59,6 +61,31 @@ public abstract class Piece{
   }
   
   //for all pieces other than pawns
+  //loops of one for the king
+  public void kingPieceAdd(ArrayList<Square> moves, int newFile, int newRank, int dx, int dy){
+    newFile += dx;
+    newRank += dy;
+    
+    if(!isOnBoard(newFile, newRank)){
+      return;
+    }
+    
+    if(!board.hasPieceAt(newFile, newRank)){
+      moves.add(board.squares[newFile][newRank]);
+    }
+    else{
+      if(!isSameColor(board.getPiece(newFile, newRank))){
+        moves.add(board.squares[newFile][newRank]);  
+      }
+
+      return;
+    }
+    return;
+  }
+  
+  //for all pieces other than pawns
+  //goes forever
+  //used by all except king
   public void recursivePieceAdd(ArrayList<Square> moves, int newFile, int newRank, int dx, int dy){
     newFile += dx;
     newRank += dy;
@@ -71,11 +98,17 @@ public abstract class Piece{
       moves.add(board.squares[newFile][newRank]);
     }
     else{
-      moves.add(board.squares[newFile][newRank]);
+      if(!isSameColor(board.getPiece(newFile, newRank))){
+        moves.add(board.squares[newFile][newRank]);  
+      }
+
       return;
     }
-    
     recursivePieceAdd(moves, newFile, newRank, dx, dy);
+  }
+  
+  boolean isSameColor(Piece p){
+    return p.isWhite == isWhite;
   }
   
   public void setSquare(Square s){
@@ -94,7 +127,15 @@ public abstract class Piece{
   }
   
   public String toString(String pieceString){
-    return "I am a " + pieceString + " on " + getMoveString(file, rank);
+    return "I am a " + pieceString + " on " + getMoveString(getFile(), getRank());
+  }
+  
+  public int getFile(){
+    return mySquare.file;
+  }
+  
+  public int getRank(){
+    return mySquare.rank;
   }
   
 }

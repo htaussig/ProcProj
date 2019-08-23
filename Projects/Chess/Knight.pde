@@ -1,7 +1,7 @@
 public class Knight extends Piece{
   
-  public Knight(boolean isWhite_, int file_, int rank_){
-    super(isWhite_, file_, rank_);
+  public Knight(boolean isWhite_){
+    super(isWhite_);
   }
   
   public void display(){
@@ -42,7 +42,7 @@ public class Knight extends Piece{
       direction = -1;
     }
     
-    noPieceAdd(moves, file, rank + direction, board);
+    //noPieceAdd(moves, file, rank + direction, board);
     
     return moves;
   }

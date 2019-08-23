@@ -1,7 +1,7 @@
 public class Rook extends Piece{
   
-  public Rook(boolean isWhite_, int file_, int rank_){
-    super(isWhite_, file_, rank_);
+  public Rook(boolean isWhite_){
+    super(isWhite_);
   }
   
   public void display(){
@@ -27,13 +27,11 @@ public class Rook extends Piece{
   
   public ArrayList<Square> getValidMoves(Board board){
     ArrayList<Square> moves = new ArrayList<Square>();
-    int direction = 1;
     
-    if(!isWhite){
-      direction = -1;
-    }
-    
-    noPieceAdd(moves, file, rank + direction, board);
+    recursivePieceAdd(moves, getFile(), getRank(), 0, 1);
+    recursivePieceAdd(moves, getFile(), getRank(), 0, -1);
+    recursivePieceAdd(moves, getFile(), getRank(), 1, 0);
+    recursivePieceAdd(moves, getFile(), getRank(), -1, 0);
     
     return moves;
   }

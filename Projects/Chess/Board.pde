@@ -27,25 +27,25 @@ public class Board{
   void createPieces(){ 
     for(int m = 0; m < 8; m++){
       //true means the pieces are white
-      squares[m][1].movePieceHere(new Pawn(true, m, 1));
-      squares[m][6].movePieceHere(new Pawn(false, m, 6));
+      squares[m][1].movePieceHere(new Pawn(true));
+      squares[m][6].movePieceHere(new Pawn(false));
       createHomeRow(0, true);
       createHomeRow(7, false);
     }
   }
   
   void createHomeRow(int colNum, boolean isWhite){
-    squares[0][colNum].movePieceHere(new Rook(isWhite, 0, colNum));
-    squares[7][colNum].movePieceHere(new Rook(isWhite, 7, colNum));
+    squares[0][colNum].movePieceHere(new Rook(isWhite));
+    squares[7][colNum].movePieceHere(new Rook(isWhite));
     
-    squares[1][colNum].movePieceHere(new Knight(isWhite, 1, colNum));
-    squares[6][colNum].movePieceHere(new Knight(isWhite, 6, colNum));
+    squares[1][colNum].movePieceHere(new Knight(isWhite));
+    squares[6][colNum].movePieceHere(new Knight(isWhite));
     
-    squares[2][colNum].movePieceHere(new Bishop(isWhite, 2, colNum));
-    squares[5][colNum].movePieceHere(new Bishop(isWhite, 5, colNum));
+    squares[2][colNum].movePieceHere(new Bishop(isWhite));
+    squares[5][colNum].movePieceHere(new Bishop(isWhite));
     
-    squares[3][colNum].movePieceHere(new Queen(isWhite, 3, colNum));
-    squares[4][colNum].movePieceHere(new King(isWhite, 4, colNum));
+    squares[3][colNum].movePieceHere(new Queen(isWhite));
+    squares[4][colNum].movePieceHere(new King(isWhite));
   }
   
   boolean hasPieceAt(int file, int rank){
@@ -94,18 +94,35 @@ public class Board{
   
   void display(){
     for(int i = 0; i < 8; i++){
-      float sWidth = boardW / 8.0;
       
-      text(8 - i, ((WIDTH - boardW) / 2.0) - sWidth - 20, (((WIDTH - boardW) / 2) + sWidth * i) - sWidth / 2);
+      drawCoordinates(i);
+      
       for(int m = 0; m < 8; m++){
         squares[i][m].display();
       }
     }
   }
+  
+  Piece getPiece(int f, int r){
+   return squares[f][r].getPiece();
+  }
+  
+  
+  void drawCoordinates(float i){
+    stroke(0);
+    fill(0);
+    
+    float sWidth = boardW / 8.0;
+    float theX = ((WIDTH - boardW) / 2.0) - sWidth;
+    float theY = (((WIDTH - boardW) / 2) + sWidth * i) - sWidth / 2;
+    text(int(8 - i), theX - 20, theY);
+    text(char(int('a' + i)), theY, theX + boardW + 20);
+  }
 }
 
+
 boolean isOnBoard(int f, int r){
-  if(f < 0 || f > 7 || r < 0 || r > 8){
+  if(f < 0 || f > 7 || r < 0 || r > 7){
     return false; 
   }
   return true;

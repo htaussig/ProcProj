@@ -7,41 +7,36 @@ float bWIDTH = 800;
 
 Board board;
 Square lastSquare;
-void setup(){
+void setup() {
   size(1000, 1000);
-  
+
   board = new Board(bWIDTH);
-  
+
   rectMode(CENTER);
 }
 
-void draw(){
+void draw() {
   float margin = (WIDTH - bWIDTH) / 2;
   translate(margin, margin);
   background(120);
   board.display();
 }
 
-void mousePressed(){
-  
+void mousePressed() {
+
   Square s = board.getSquare(mouseX, mouseY, WIDTH, HEIGHT);
-  
-  if(s.isValidMove && lastSquare.hasPiece()){
-    lastSquare.movePiece(s);
-    board.resetDisplay();
-  }
-  else{  
-    lastSquare = s;
-    
-    board.resetDisplay();
-    if(s != null){
+
+  //some whack stuff going here
+  if (s != null) {
+    if (s.isValidMove && lastSquare.hasPiece()) {
+      lastSquare.movePiece(s);
+      board.resetDisplay();
+    } else {  
+      lastSquare = s;
+
+      board.resetDisplay();
       println(s.toString());
       board.displayMoves(s);
     }
-    else{
-      println("no");
-    }
   }
-
-  
 }

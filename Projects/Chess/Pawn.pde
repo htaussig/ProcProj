@@ -1,7 +1,7 @@
 public class Pawn extends Piece{
   
-  public Pawn(boolean isWhite_, int file_, int rank_){
-    super(isWhite_, file_, rank_);
+  public Pawn(boolean isWhite_){
+    super(isWhite_);
   }
   
   public void display(){
@@ -30,24 +30,24 @@ public class Pawn extends Piece{
     
     if(!isWhite){
       direction = -1;
-      if(rank == 6){
+      if(getRank() == 6){
         //you can move forward two spaces with your first pawn move
         numLoops = 2;
       }
     }
     else{
-      if(rank == 1){
+      if(getRank() == 1){
         numLoops = 2;
       }
     }
     
-    //noPieceAdd(moves, file, rank + direction, board);
+    //noPieceAdd(moves, file, getRank() + direction, board);
     
-    pieceAdd(moves, file + 1, rank + direction, board);
-    pieceAdd(moves, file -1, rank + direction, board);
+    pieceAdd(moves, getFile() + 1, getRank() + direction, board);
+    pieceAdd(moves, getFile() -1, getRank() + direction, board);
     
     
-    recursiveNoPieceAdd(moves, file, rank, 0, direction, numLoops);
+    recursiveNoPieceAdd(moves, getFile(), getRank(), 0, direction, numLoops);
     
     println("moves: " + getMovesString(moves));
     

@@ -1,12 +1,12 @@
-int NUMROWS = 40;
+int NUMROWS = 34;
 
 Square[][] squares;
 
-String filename = "yinyang.png";
+String filename = "Harry.png";
 PImage img;
 
 void setup() {
-  size(800, 800);
+  size(800, 226);
   setup1();
 }
 
@@ -48,7 +48,7 @@ float getVal(float x2, float y2, float s) {
 
 void draw() {
   setup1();
-  background(255);
+  background(0);
   for (int i = 0; i < NUMROWS; i++) {
     for (int k = 0; k < NUMROWS; k++) {
       squares[i][k].display();
@@ -63,6 +63,11 @@ void keyPressed(){
   }
   if(key == 's'){
     NUMROWS--;
+    //setup1();
+  }
+  if(key == 'S'){
+    saveFrame();
+    
     //setup1();
   }
 }

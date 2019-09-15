@@ -59,6 +59,10 @@ public class Square{
     return piece;
   }
   
+  boolean getPieceTeam(){
+    return piece.isWhite;
+  }
+  
   void display(){
     noStroke();
     

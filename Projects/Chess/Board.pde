@@ -118,9 +118,34 @@ public class Board{
     text(int(8 - i), theX - 20, theY);
     text(char(int('a' + i)), theY, theX + boardW + 20);
   }
+  
+  Square getSquare(int f, int r){
+    return squares[f][r];
+  }
+  
+  boolean checkForTheCheck(boolean isWhiteTurn){
+    Square s = getKingSquare(isWhiteTurn);
+    if(s.isValidMove){
+      return true;
+    }
+    return false;
+  }
+  
+  Square getKingSquare(boolean isWhiteTurn){
+    for(int i = 0; i < 8; i++){    
+      for(int m = 0; m < 8; m++){
+        Piece p = squares[i][m].piece;
+        if(p instanceof King && isWhiteTurn == p.isWhite){
+          return squares[i][m];
+        }
+      }
+    }
+    println("error in getKingSquare");
+    return null;
+  }
 }
 
-
+//global method!!!!!!!!!!
 boolean isOnBoard(int f, int r){
   if(f < 0 || f > 7 || r < 0 || r > 7){
     return false; 

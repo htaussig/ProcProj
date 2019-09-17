@@ -2,7 +2,7 @@
 int NUMCOLS = 10;
 int NUMROWS = 10;
 
-float size = 10;
+//float size = 10;
 
 ArrayList<CurvyLine> lines = new ArrayList<CurvyLine>();
 
@@ -10,19 +10,21 @@ ArrayList<CurvyLine> lines = new ArrayList<CurvyLine>();
 float t;
 float TIMEINC = .003;
 
-int NUMLINES = 4;
+int NUMLINES = 5; //numlines per side
+
 
 void setup(){
   size(600, 600);
   blendMode(DIFFERENCE);
   noStroke();
+  frameRate(1000);
   
   genLines();
 }
 
 void genLines(){
   NUMLINES -= 1;
-  for(float i = 0; i <= width; i += width){
+  for(int i = 0; i <= width; i += width){
     for(float j = 0; j <= NUMLINES; j++){
       lines.add(new CurvyLine(i, (j/ NUMLINES) * height));
       lines.add(new CurvyLine((j/ NUMLINES) * width, i));
@@ -58,5 +60,6 @@ void draw(){
 void keyPressed(){
   if(key == 's'){
     saveFrame();
+    println("frame saved");
   }
 }

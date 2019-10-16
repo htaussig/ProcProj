@@ -1,6 +1,6 @@
 
 # 3D Snake
-htaussig.github.io
+[3D Sanke game!](https://fir-test-dfe3a.firebaseapp.com/)
 
 # ProcProj
 My Processing Sketches
@@ -21,7 +21,7 @@ Projects/canvasSketch has my new canvasSketch projects
 
 ## Authors
 
-* **Harry Taussig** - *Initial work* - [Twitter](https://twitter.com/Generendipity)
+* **Harry Taussig**  - [Twitter](https://twitter.com/Generendipity)
 
 
 ## License
@@ -29,7 +29,7 @@ Projects/canvasSketch has my new canvasSketch projects
 This project is licensed under the MIT License - see the [LICENSE.md](LICENSE.md) file for details
 
 ## Inspirtation
-**I very often borrow code from these people!*
+*I very often borrow code from these people!
 * [Manoloide](https://twitter.com/manoloidee)
 * [Daniel Shiffman](https://twitter.com/shiffman)
 * [Bees and Bombs](https://twitter.com/beesandbombs)

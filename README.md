@@ -1,6 +1,6 @@
 
 # 3D Snake
-[3D Sanke game!](https://fir-test-dfe3a.firebaseapp.com/)
+[3D Snake game!](https://fir-test-dfe3a.firebaseapp.com/)
 
 # ProcProj
 My Processing Sketches

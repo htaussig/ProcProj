@@ -1,6 +1,10 @@
 // Ensure ThreeJS is in global scope for the 'examples/'
 global.THREE = require('three');
 
+const palettes = require('nice-color-palettes');
+const eases = require('eases');
+const BezierEasing = require('bezier-easing');
+
 // Include any additional ThreeJS examples below
 require('three/examples/js/controls/OrbitControls');
 
@@ -8,12 +12,16 @@ const canvasSketch = require('canvas-sketch');
 const random = require('canvas-sketch-util/random');
 
 const settings = {
+  //--output=tmp/
+  dimensions: [512, 512],
+  fps: 24, 
+  //duration: 4, 
   // Make the loop animated
   animate: true,
   // Get a WebGL canvas rather than 2D
   context: 'webgl',
   // Turn on MSAA
-  attributes: { antialias: true }
+  attributes: { antialias: true },
 };
 
 const sketch = ({ context }) => {
@@ -37,14 +45,16 @@ const sketch = ({ context }) => {
   // Setup your scene
   const scene = new THREE.Scene();
 
+  const palette = random.pick(palettes);
+
   const box = new THREE.BoxGeometry(1, 1, 1);
-  for (let i = 0; i < 10; i++){
+  for (let i = 0; i < 40; i++){
     const mesh = new THREE.Mesh(
       box,
 
       //mesh physical = standard material
-      new THREE.MeshBasicMaterial({
-        color: 'red'
+      new THREE.MeshStandardMaterial({
+        color: random.pick(palette)
       })
     );
 
@@ -53,11 +63,25 @@ const sketch = ({ context }) => {
       random.range(-1, 1), 
       random.range(-1, 1)
     );
+    mesh.scale.set(
+      random.range(-1, 1), 
+      random.range(-1, 1), 
+      random.range(-1, 1)
+    );
 
-    mesh.scale.multiplyScalar(.1);
+    mesh.scale.multiplyScalar(.5);
     scene.add(mesh);
   }
     
+  scene.add(new THREE.AmbientLight('hsl(0, 0%, 100%)'));
+
+  const light = new THREE.DirectionalLight('white', 1);
+  light.position.set(
+    1,4,2
+  );
+  scene.add(light);
+
+  const easeFn = BezierEasing(.74,.04,.6,1);
 
   // // Specify an ambient/unlit colour
   // scene.add(new THREE.AmbientLight('#59314f'));
@@ -97,9 +121,15 @@ const sketch = ({ context }) => {
       camera.updateProjectionMatrix();
     },
     // Update & render your scene here
-    render ({ time }) {
+    render ({ playhead }) {
       //mesh.rotation.y = time * (10 * Math.PI / 180);
       // controls.update();
+      const t = playhead;
+      //console.log(playhead);
+      //const angle = eases.bounceIn(t) * 2 * Math.PI;
+      const angle = easeFn(t) * 2 * Math.PI;
+      //console.log(angle);
+      scene.rotation.y = angle;
       renderer.render(scene, camera);
     },
     // Dispose of events & renderer for cleaner hot-reloading

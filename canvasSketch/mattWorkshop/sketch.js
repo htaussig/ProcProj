@@ -27,39 +27,62 @@ const sketch = () => {
 //can create functions here
 const createGrid = () => {
   const points = [];
-  const count = 29; 
+  const count = 49; 
   //frequencyR for the radius, 
   //frequencyRot for the rotation
   const frequencyRad = .65; //how zoomed in/out to the noise grid we are
   const frequencyRot = .35;
-  for(let x = 0; x < count; x++){
+  for(let x = count - 1; x >= 0; x--){
     for(let y = 0; y < count; y++){
       //uv space
       //working with numbers between 0 and 1
       const u = count <= 1 ? 0.5 : x / (count - 1); 
       const v = count <= 1 ? 0.5 : y / (count - 1); 
-      const radius = (Math.abs(random.noise2D(u * frequencyRad, v * frequencyRad)) * .16) + .02;
-      const rotation = (random.noise2D((u * frequencyRot) + 10, (v * frequencyRot) + 10) + .5) * Math.PI;
+      const radius = (Math.abs(random.noise2D(u * frequencyRad, v * frequencyRad)) * .1) + .015;
+      //console.log(radius);
+      const rotation = (random.noise2D((u * frequencyRot) + 10, (v * frequencyRot) + 10) + 0) * Math.PI;
+      //console.log(rotation);
       points.push({  //creating an object here!
         color: random.pick(palette),
         radius: radius, //Math.abs(random.gaussian() * 0.004) + 0.0085, //in between -3.5 and positive 3.5
         position: [u, v],
-        rotation: rotation
+        rotation: rotation,
+        text: '🐟'
       });  //I think it's like an arrayList
     }
   }
+
+  //add a random token
+  const u = random.value(); 
+  const v = random.value(); 
+  const radius = (Math.abs(random.noise2D(u * frequencyRad, v * frequencyRad)) * .08) + .05;
+  const rotation = (random.noise2D((u * frequencyRot) + 10, (v * frequencyRot) + 10) + 0) * Math.PI;
+  //console.log(rotation);
+  points.push({  //creating an object here!
+    color: random.pick(palette),
+    radius: radius, //Math.abs(random.gaussian() * 0.004) + 0.0085, //in between -3.5 and positive 3.5
+    position: [u, v],
+    rotation: rotation,
+    text: '🐦'
+
+  });
+  
   return points; 
 };
 
 //random.setSeed(123);
-const points = createGrid().filter(() => random.value() > 0.5);
+var points = createGrid();
+const tokenElement = points[points.length - 1];
+points = points.filter(() => random.value() > 0.5); //take away half
+points.push(tokenElement);
+//points = random.shuffle(points);
 const margin = 330; 
 
   //returns a render function (pure function)
   return ({ context, width, height }) => {
 
     //background is transparent, not white
-    context.fillStyle = 'white';
+    context.fillStyle = '#02032e';
     context.fillRect(0, 0, width, height);
     
     points.forEach(data => {
@@ -67,7 +90,8 @@ const margin = 330;
         position,
         radius,
         color,
-        rotation
+        rotation,
+        text
       } = data;
     
 const [ u, v ] = position;
@@ -80,17 +104,29 @@ const [ u, v ] = position;
 
       context.save(); //pushMatrix
       context.fillStyle = color;
-      context.font = `${radius * width}px "Arial"`;
-      context.translate(x, y);
+      context.font = `${(radius / 2) * width}px "Arial"`;
+      context.translate(x - (width * 2), y - (height * 2)); //draw the original shape off the screen
       context.rotate(rotation);
-      context.fillText('=', 0, 0);
+
+      //context.globalAlpha = 0.55;
+
+      context.shadowColor = color;
+      context.shadowBlur = 0;
+      context.shadowOffsetX =  width * 2;
+      context.shadowOffsetY =  height * 2;
+
+      context.scale(-1, 1)
+      context.textAlign = 'center';
+      context.fillText(text, 0, 0);
 
       context.restore(); //popMatrix
       //context.fill();
       // context.strokeStyle = 'black';
       // context.lineWidth = 20; 
       // context.stroke();
-    });
+    }
+    
+    );
     console.log(points);
 
     // context.fillStyle = 'pink';

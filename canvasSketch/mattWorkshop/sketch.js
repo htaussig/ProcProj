@@ -79,6 +79,7 @@ points.push(tokenElement);
 const margin = 330; 
 
   //returns a render function (pure function)
+  //return { extension: '.svg', data: -------};
   return ({ context, width, height }) => {
 
     //background is transparent, not white

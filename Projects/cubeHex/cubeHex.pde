@@ -20,7 +20,6 @@ void setup() {
   tri = new Triangle(0, 0, triR, radians(0));
 }
 
-
 //ease functions taken from bees and bombs
 //so they expect values between 0 and 1 and also return such values
 float ease(float p) {
@@ -33,7 +32,6 @@ float ease(float p, float g) {
   else
     return 1 - 0.5 * pow(2*(1 - p), g);
 }
-
 
 void draw() {  
   ortho(); 
@@ -54,7 +52,7 @@ void drawHex() {
   translate(0, 0, -500);
 
   noStroke();
-  //fill(255,0, 0, 150);
+
   fill(dark);
   beginShape();
   for (float i = .5; i < 6.5; i++) {
@@ -68,18 +66,14 @@ void drawHex() {
 
 void drawCube() {
   pushMatrix();
-  //translate(0, 0, -500);
-
   //hardcoded value, couldn't figure out the math
   rotateX(-radians(35.3));
   rotateY(radians(45));
 
   cubeRotations();
 
-  //fill(0, 0, 255, 50);
   fill(dark);
   noStroke();
-  //stroke(white);
 
   //hardcoded
   float s = 366.66666;
@@ -102,8 +96,6 @@ void cubeRotations() {
   else{
     resetHex();
   }
-  
-  //rotY += radians(1);
 }
 
 void resetHex(){
@@ -116,7 +108,6 @@ void resetHex(){
 
 void drawCubedTriangle(float s) {
   float v = s / 2;
-  //stroke(white);
   noStroke();
   beginShape(QUADS);
 
@@ -125,7 +116,6 @@ void drawCubedTriangle(float s) {
   vertex(-v, -v, v);
   vertex(-v, -v, -v);
   vertex(-v, v, -v);
-
   
   fill(dark);
   vertex(v, v, v);
@@ -151,18 +141,11 @@ void drawCubedTriangle(float s) {
   vertex(-v, v, -v);
   vertex(-v, v, v);
   
-  //strokeWeight(12);
   //a triangle
   fill(white);
   vertex(v, -v, v);
-  //stroke(255, 0, 0);
-  //point(v, -v, v); 
   vertex(v, -v, -v);
-  //stroke(255, 0, 255);
-  //point(v, -v, -v);  
   vertex(-v, -v, v);
-  //stroke(0, 255, 0);
-  //point(-v, -v, v);
   vertex(v, -v, v);
 
   endShape();

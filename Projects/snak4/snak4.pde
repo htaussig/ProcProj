@@ -373,7 +373,7 @@ void mousePressed() {
 }
 
 void keyPressed() {
-
+  saveFrame();
   if (alive) {
     if (key == 'w' ||keyCode == UP) {
       snake.setDirection(W);
@@ -714,7 +714,7 @@ class Snake {
   }
 
   void titleDisplay() {
-    for (int i = titleCount; i < titleCount + limbs.size() - 22; i++) {
+    for (int i = titleCount; i < titleCount + limbs.size() - 6; i++) {
       //println("loopin");
       Limb limb = limbs.get((limbs.size() - 1) - (i % limbs.size()));
       limb.display();

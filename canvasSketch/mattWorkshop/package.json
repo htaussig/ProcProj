@@ -13,6 +13,7 @@
     "canvas-sketch": "^0.7.0",
     "canvas-sketch-util": "^1.10.0",
     "nice-color-palettes": "^3.0.0",
+    "poisson-disk-sampling": "^1.0.6",
     "three": "^0.109.0"
   }
 }

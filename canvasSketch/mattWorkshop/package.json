@@ -13,6 +13,7 @@
     "bezier-easing": "^2.1.0",
     "canvas-sketch": "^0.7.0",
     "canvas-sketch-util": "^1.10.0",
+    "color-space": "^1.16.0",
     "eases": "^1.0.8",
     "glsl-hsl2rgb": "^1.1.0",
     "glsl-noise": "0.0.0",

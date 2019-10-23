@@ -29,7 +29,7 @@ const sketch = () => {
 
 //random.setSeed(123);
 //var points = createGrid();
-var p = new poisson([100, 100, 100], 11, 23, 30); //seems to work poorly with decimals
+var p = new poisson([100, 100, 100], 9, 23, 30); //seems to work poorly with decimals
 var points = p.fill();
 console.log(points);
 // const tokenElement = points[points.length - 1];
@@ -38,14 +38,43 @@ console.log(points);
 //points = random.shuffle(points);
 const margin = 250; 
 
-const textArray = ['🌺','🌻','🌼','🏵','💠','🌿️'];
-const colArray = ['#cda1fd', '#fff0f0', '#fbcefd', '#efaef4'];
+const textArray = ['🌺','🌻','🌼','🌿️'];
+//const colArray = ['#cda1fd', '#fff0f0', '#fbcefd', '#efaef4'];
+const colArray = random.pick(palettes);
+
+function LightenDarkenColor(col,amt) {
+  var usePound = false;
+  if ( col[0] == "#" ) {
+      col = col.slice(1);
+      usePound = true;
+  }
+
+  var num = parseInt(col,16);
+
+  var r = (num >> 16) + amt;
+
+  if ( r > 255 ) r = 255;
+  else if  (r < 0) r = 0;
+
+  var b = ((num >> 8) & 0x00FF) + amt;
+
+  if ( b > 255 ) b = 255;
+  else if  (b < 0) b = 0;
+
+  var g = (num & 0x0000FF) + amt;
+
+  if ( g > 255 ) g = 255;
+  else if  ( g < 0 ) g = 0;
+
+  return (usePound?"#":"") + (g | (b << 8) | (r << 16)).toString(16);
+}
+
   //returns a render function (pure function)
   //return { extension: '.svg', data: -------};
   return ({ context, width, height }) => {
 
     //background is transparent, not white
-    context.fillStyle = 'black';
+    context.fillStyle = 'white';
     context.fillRect(0, 0, width, height);
 
     points.sort((a, b) => a[2] - b[2]);
@@ -71,7 +100,7 @@ const colArray = ['#cda1fd', '#fff0f0', '#fbcefd', '#efaef4'];
 
       //console.log(w);
 
-      const l = (w * 60) + 20;
+      //const l = (w * 60) + 20;
 
       const sizeMult = .1 / ((w / 2) + 0.5);
 
@@ -84,11 +113,19 @@ const colArray = ['#cda1fd', '#fff0f0', '#fbcefd', '#efaef4'];
       const rotation = random.range(-Math.PI / 4, Math.PI / 4);
       context.rotate(rotation);
     
-      const color = random.pick(colArray);
+      var color = random.pick(colArray);
+      const colDarkenMag = 70;
+      const colDMRand = 10;
+      color = LightenDarkenColor(color, (w * colDarkenMag) - colDarkenMag + random.range(-colDMRand, colDMRand));
+
+
+      
       //`hsl(210, ${l}%, ${l}%)`
       context.shadowColor = color;
       
-      context.shadowBlur = 0;
+      const shadowBlurMag = 5;
+
+      context.shadowBlur = shadowBlurMag - (w * shadowBlurMag);
       context.shadowOffsetX =  width * 2;
       context.shadowOffsetY =  height * 2;
 

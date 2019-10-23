@@ -111,6 +111,9 @@ const [ u, v ] = position;
 
       //context.globalAlpha = 0.55;
 
+
+      
+
       context.shadowColor = color;
       context.shadowBlur = 0;
       context.shadowOffsetX =  width * 2;

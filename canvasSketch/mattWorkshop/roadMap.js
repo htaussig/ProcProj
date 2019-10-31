@@ -33,19 +33,25 @@ const sketch = () => {
       var [w, h] = size;
 
       if(u < xLine && xLine < u + w){
-        newBlocks.push({
-          position: [u, v],
-          color: random.pick(palette),
-          size: [xLine - u - roadWidth, h]
-        });
-        newBlocks.push({
-          position: [xLine + roadWidth, v],
-          color: random.pick(palette),
-          size: [(u + w) - xLine, h]
-        });
+        if(u < xLine - roadWidth / 2){
+          //left square
+          newBlocks.push({
+            position: [u, v],
+            color: random.pick(palette),
+            size: [xLine - u - (roadWidth / 2), h]
+          });
+        }
+        if((u + w) > xLine + roadWidth / 2){
+          //right square
+          newBlocks.push({
+            position: [xLine + (roadWidth / 2), v],
+            color: random.pick(palette),
+            size: [(u + w) - (xLine + roadWidth / 2), h]
+          });
+        }             
       }
       else{
-        newBlocks.push(this);
+        newBlocks.push(data);
       }
     });
     return newBlocks;
@@ -64,19 +70,25 @@ const sketch = () => {
       var [w, h] = size;
 
       if(v < yLine && yLine < v + h){
-        newBlocks.push({
-          position: [u, v],
-          color: random.pick(palette),
-          size: [w, yLine - v - roadWidth]
-        });
-        newBlocks.push({
-          position: [u, yLine + roadWidth],
-          color: random.pick(palette),
-          size: [w, (v + h) - yLine]
-        });
+        //top square
+        if(v < yLine - roadWidth / 2){
+          newBlocks.push({
+            position: [u, v],
+            color: random.pick(palette),
+            size: [w, yLine - v - roadWidth / 2]
+          });
+        }
+        if((v + h) > yLine + roadWidth / 2){
+          //bottom square
+          newBlocks.push({
+            position: [u, yLine + roadWidth / 2],
+            color: random.pick(palette),
+            size: [w, (v + h) - (yLine + roadWidth / 2)]
+          });
+        }
       }
       else{
-        newBlocks.push(this);
+        newBlocks.push(data);
       }
     });
     return newBlocks;
@@ -92,13 +104,17 @@ const sketch = () => {
     
 
 
-    blocks = splitBoxX(blocks, random.value(), 1/24);
-    blocks = splitBoxY(blocks, random.value(), 1/24);
+    blocks = splitBoxX(blocks, random.value(), .01);
+    blocks = splitBoxY(blocks, random.value(), .01);
+    
    
     return blocks;
   }
 
-  squares = genCityBlocks(squares);
+  for(var i = 0; i < 2; i++){
+    squares = genCityBlocks(squares);
+    //console.log(squares);
+  }
 
   //const spacingMult = 1;
   // for(var i = .5; i < count; i++){
@@ -111,9 +127,8 @@ const sketch = () => {
   //   }
   // }
 
-  const depth = 40;
-  for(var i = 0; i < depth; i++){
-    nextSquares = [];
+  const genBuildings = (squares) => {
+    var nextSquares = [];
     squares.forEach(data => {
       const {
         position,
@@ -124,16 +139,17 @@ const sketch = () => {
       var [u, v] = position;
       var [w, h] = size;
 
-      if(!(w < 1 / 8 || h < 1 / 8)){
+      if(!(w < 1 / 32 || h < 1 / 32)){
         var swapAxes = false;
         //switch the horizontal/vertical split
         if(random.value() < .5){
           swapAxes = true;
         }
         const numNewRects = random.rangeFloor(2, 4);//random.rangeFloor(3, 5); //random.rangeFloor(3, 5);
-        if(random.value() < .09){
+        if(random.value() < .07){
           //const halfWay = -.5 + (1 / (numNewRects * 2));
-          for(var n = 0; n < 1; n += 1 / numNewRects){
+          for(var i = 0; i < numNewRects; i++){
+            var n = i / numNewRects;
             var tempU = u;
             var tempV = v;
             var tempW = w;
@@ -147,24 +163,35 @@ const sketch = () => {
               tempH /= numNewRects;
             }
   
-            squares.push({
+            nextSquares.push({
               position: [tempU, tempV],
               color: random.pick(palette),
               size: [tempW, tempH]
             });
           }
         }
-      }     
+        else{
+          nextSquares.push(data);
+        }
+      }
+      else{
+        nextSquares.push(data);
+      } 
+      
     });
-    //squares
-    //squares.push(nextSquares);
+    return nextSquares;
+  }
+  
+  const depth = 15;
+  for(var i = 0; i < depth; i++){
+    squares = genBuildings(squares);
   }
 
   const margin = 0;
-  const spacing = 0; //stays relatively constant
+  const spacing = 10; //stays relatively constant
 
   return ({ context, width, height }) => {
-    context.fillStyle = 'black';
+    context.fillStyle = random.pick(palette);
     context.fillRect(0, 0, width, height);
 
     squares.forEach(data => {

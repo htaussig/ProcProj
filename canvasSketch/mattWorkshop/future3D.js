@@ -1,14 +1,62 @@
-const canvasSketch = require('canvas-sketch');
+// Ensure ThreeJS is in global scope for the 'examples/'
+global.THREE = require('three');
 const { lerp }  = require('canvas-sketch-util/math'); //npm install canvas-sketch-util in this projects directory to use this
 const random = require('canvas-sketch-util/random');
-const palettes = require('nice-color-palettes');
+const palettes = require('nice-color-palettes'); //npm install nice-color-palettes
+
+// Include any additional ThreeJS examples below
+require('three/examples/js/controls/OrbitControls');
+
+const canvasSketch = require('canvas-sketch');
 
 const settings = {
-  dimensions: [ 2048, 2048 ]
+  // Make the loop animated
+  animate: true,
+  // Get a WebGL canvas rather than 2D
+  context: 'webgl',
+  // Turn on MSAA
+  attributes: { antialias: true }
 };
 
-const sketch = () => {
-    
+const sketch = ({ context }) => {
+  // Create a renderer
+  const renderer = new THREE.WebGLRenderer({
+    context
+  });
+
+  // WebGL background color
+  renderer.setClearColor('#000', 1);
+
+  // Setup a camera
+  const camera = new THREE.PerspectiveCamera(45, 1, 0.01, 100);
+  camera.position.set(2, 2, -4);
+  camera.lookAt(new THREE.Vector3());
+
+  // Setup camera controller
+  const controls = new THREE.OrbitControls(camera, context.canvas);
+
+  // Setup your scene
+  const scene = new THREE.Scene();
+
+  const box = new THREE.BoxGeometry(1, 1, 1);
+  // const mesh = new THREE.Mesh(
+  //   box,
+  //   new THREE.MeshPhysicalMaterial({
+  //     color: 'white',
+  //     roughness: 0.75,
+  //     flatShading: true
+  //   })
+  // );
+  // scene.add(mesh);
+
+  // Specify an ambient/unlit colour
+  scene.add(new THREE.AmbientLight('#FFFFFF'));
+
+  // Add some light
+  const light = new THREE.PointLight('#FFFFFF', 1, 15.5);
+  light.position.set(2, 2, -4).multiplyScalar(1.5);
+  scene.add(light);
+
   var squares = [{
     position: [0, 0],
     color: 'black',
@@ -215,34 +263,70 @@ const sketch = () => {
   }
 
   const margin = 0;
-  const spacing = 40; //stays relatively constant
+  const spacing = .01; //stays relatively constant
 
-  return ({ context, width, height }) => {
-    context.fillStyle = 'black';
-    context.fillRect(0, 0, width, height);
+  const magnitude = 1;
+  const width = 1 * magnitude;
+  const height = 1 * magnitude;
+  squares.forEach(data => {
+    const {
+      position, 
+      color,     
+      size
+    } = data;
+  
+    const [ u, v ] = position;
+    const [ w1, h1 ] = size;
 
-    squares.forEach(data => {
-      const {
-        position, 
-        color,     
-        size
-      } = data;
-    
-      const [ u, v ] = position;
-      const [ w1, h1 ] = size;
+    const x = lerp(margin, width - margin, u) + spacing / 2;
+    const y = lerp(margin, height - margin, v) + spacing / 2; 
 
-      const x = lerp(margin, width - margin, u) + spacing / 2;
-      const y = lerp(margin, height - margin, v) + spacing / 2; 
+    const w = lerp(margin, width - margin, w1) - spacing;
+    const h = lerp(margin, height - margin, h1) - spacing;
 
-      const w = lerp(margin, width - margin, w1) - spacing;
-      const h = lerp(margin, height - margin, h1) - spacing;
 
-      context.fillStyle = color;
-      context.fillRect(x, y, w, h);
-      
-    });
+    const mesh1 = new THREE.Mesh(
+      box,
+      new THREE.MeshPhysicalMaterial({
+        color: color,
+        roughness: 0.75,
+        flatShading: true
+      })
+    );
+
+    mesh1.position.set(
+      x + w / 2,
+      0, 
+      y + h / 2
+    );
+
+    mesh1.scale.set(w, random.value(), h);
+
+    scene.add(mesh1);
+  }
+  );
+
+  // draw each frame
+  return {
+    // Handle resize events here
+    resize ({ pixelRatio, viewportWidth, viewportHeight }) {
+      renderer.setPixelRatio(pixelRatio);
+      renderer.setSize(viewportWidth, viewportHeight);
+      camera.aspect = viewportWidth / viewportHeight;
+      camera.updateProjectionMatrix();
+    },
+    // Update & render your scene here
+    render ({ time }) {
+      //mesh.rotation.y = time * (10 * Math.PI / 180);
+      controls.update();
+      renderer.render(scene, camera);
+    },
+    // Dispose of events & renderer for cleaner hot-reloading
+    unload () {
+      controls.dispose();
+      renderer.dispose();
+    }
   };
 };
-
 
 canvasSketch(sketch, settings);

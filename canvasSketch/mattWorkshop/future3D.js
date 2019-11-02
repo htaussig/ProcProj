@@ -12,10 +12,13 @@ const canvasSketch = require('canvas-sketch');
 const settings = {
   // Make the loop animated
   animate: true,
+  //
+  
   // Get a WebGL canvas rather than 2D
   context: 'webgl',
   // Turn on MSAA
-  attributes: { antialias: true }
+  attributes: { antialias: true },
+  dimensions: [2048, 2048]
 };
 
 const sketch = ({ context }) => {
@@ -28,9 +31,15 @@ const sketch = ({ context }) => {
   renderer.setClearColor('#000', 1);
 
   // Setup a camera
-  const camera = new THREE.PerspectiveCamera(45, 1, 0.01, 100);
-  camera.position.set(2, 2, -4);
-  camera.lookAt(new THREE.Vector3());
+  const camera = new THREE.OrthographicCamera();
+  
+
+  const zoom = 2;
+  camera.position.set(-.5 * zoom, .4 * zoom, -1 * zoom);
+  const eye = new THREE.Vector3(1, -1, 2);
+  const target = new THREE.Vector3(1, 1, 1);
+  const up = new THREE.Vector3(0, 1, 0);
+  //camera.lookAt(target, up);
 
   // Setup camera controller
   const controls = new THREE.OrbitControls(camera, context.canvas);
@@ -57,6 +66,7 @@ const sketch = ({ context }) => {
   light.position.set(2, 2, -4).multiplyScalar(1.5);
   scene.add(light);
 
+  
   var squares = [{
     position: [0, 0],
     color: 'black',
@@ -168,7 +178,7 @@ const sketch = ({ context }) => {
   var roadsX = [];
   var roadsY = [];
   const genCityBlocks = (blocks) => {
-    const roadWidth = 1 / 24;
+    const roadWidth = 1 / 20;
     //const margin = 1 / 32;
 
     //var blocks = []; //should push same data type as squares to these
@@ -177,7 +187,7 @@ const sketch = ({ context }) => {
 
     const xLine = getRoadValue(roadsX);
     const yLine = getRoadValue(roadsY);
-    console.log(roadsX);
+    //console.log(roadsX);
 
     blocks = splitBoxX(blocks, xLine, roadWidth);
     blocks = splitBoxY(blocks, yLine, roadWidth);
@@ -186,7 +196,7 @@ const sketch = ({ context }) => {
     return blocks;
   }
 
-  for(var i = 0; i < 2; i++){
+  for(var i = 0; i < 3; i++){
     squares = genCityBlocks(squares);
     //console.log(squares);
   }
@@ -202,6 +212,7 @@ const sketch = ({ context }) => {
   //   }
   // }
 
+  const minBuildingSize = 1 / 9;
   const genBuildings = (squares) => {
     var nextSquares = [];
     squares.forEach(data => {
@@ -214,14 +225,22 @@ const sketch = ({ context }) => {
       var [u, v] = position;
       var [w, h] = size;
 
-      if(!(w < 1 / 8 || h < 1 / 8)){
+      if(!(w < minBuildingSize && h < minBuildingSize)){
         var swapAxes = false;
         //switch the horizontal/vertical split
-        if(random.value() < .5){
-          swapAxes = true;
+        if((w < minBuildingSize || h < minBuildingSize)){
+          if(h < minBuildingSize){          
+            swapAxes = true;              
+          }
         }
+        else{
+          if(random.value() < .5){
+            swapAxes = true;
+          }
+        }
+        
         const numNewRects = random.rangeFloor(2, 4);//random.rangeFloor(3, 5); //random.rangeFloor(3, 5);
-        if(random.value() < .4){
+        if(random.value() < .3){
           //const halfWay = -.5 + (1 / (numNewRects * 2));
           for(var i = 0; i < numNewRects; i++){
             var n = i / numNewRects;
@@ -257,15 +276,18 @@ const sketch = ({ context }) => {
     return nextSquares;
   }
   
-  const depth = 5;
+  const depth = 12;
   for(var i = 0; i < depth; i++){
     squares = genBuildings(squares);
   }
 
   const margin = 0;
-  const spacing = .01; //stays relatively constant
+  const spacing = .02; //stays relatively constant
 
-  const magnitude = 1;
+  const magnitude = 1.5;
+  const cameraY = -.6;
+  const startX = -.5;
+  const startY = -.5;
   const width = 1 * magnitude;
   const height = 1 * magnitude;
   squares.forEach(data => {
@@ -278,8 +300,8 @@ const sketch = ({ context }) => {
     const [ u, v ] = position;
     const [ w1, h1 ] = size;
 
-    const x = lerp(margin, width - margin, u) + spacing / 2;
-    const y = lerp(margin, height - margin, v) + spacing / 2; 
+    const x = lerp(margin, width - margin, u + startX) + spacing / 2;
+    const y = lerp(margin, height - margin, v + startY) + spacing / 2; 
 
     const w = lerp(margin, width - margin, w1) - spacing;
     const h = lerp(margin, height - margin, h1) - spacing;
@@ -294,13 +316,18 @@ const sketch = ({ context }) => {
       })
     );
 
+    //const tallness = random.range(.1, .9);
+    const freq = .6;
+    const amp = .9;
+    const t = 1;
+    const tallness = Math.abs(random.noise3D(x, y, t, freq, amp)) + .1;
     mesh1.position.set(
       x + w / 2,
-      0, 
+      tallness/2 + cameraY, 
       y + h / 2
     );
 
-    mesh1.scale.set(w, random.value(), h);
+    mesh1.scale.set(w, tallness, h);
 
     scene.add(mesh1);
   }

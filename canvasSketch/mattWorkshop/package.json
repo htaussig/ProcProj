@@ -17,6 +17,7 @@
     "eases": "^1.0.8",
     "glsl-hsl2rgb": "^1.1.0",
     "glsl-noise": "0.0.0",
+    "googleapis": "^45.0.0",
     "nice-color-palettes": "^3.0.0",
     "poisson-disk-sampling": "^1.0.6",
     "three": "^0.109.0"

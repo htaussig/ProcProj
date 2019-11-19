@@ -11,9 +11,9 @@ require('three/examples/js/controls/OrbitControls');
 const Ease = require('eases').quintInOut;
 const canvasSketch = require('canvas-sketch');
 
-import {dad} from './Car.js';
+import {createCar} from './Car.js';
 
-console.log(dad());
+
 
 
 const settings = {
@@ -450,6 +450,21 @@ const sketch = ({ context }) => {
 
     scene.add(mesh1);
   })
+
+  var cars = []; //hold all the cars
+  var car1 = createCar(.3, .4, .01, .01);
+  console.log(car1);
+  console.log(car1.x);
+  console.log(car1.getX());
+  console.log(car1.getX);
+
+  cars.forEach(data => {
+
+    //add the cars to the scene as the type of box you want them to be
+
+  })
+
+
 
   const endingCityAngle = 1.4 * Math.PI;
   // draw each frame

@@ -379,6 +379,8 @@ const sketch = ({ context }) => {
   // roadsX.push(1);
 
 
+  //roadheight is negative so that groudnlevel for the cars is still 0
+  const ROADHEIGHT = -.01;
   roadsX.forEach(data => {
     const u = data;
     const v = .5;
@@ -386,7 +388,7 @@ const sketch = ({ context }) => {
     //const w1 = .1;
     const h1 = 1;
 
-    const tallness = .01;
+    const tallness = ROADHEIGHT;
 
     //why would we divide the spacing here by 2 but not for the regular stuff?
     const x = lerp(margin, width - margin, u + startX) + spacing / 2;
@@ -422,7 +424,7 @@ const sketch = ({ context }) => {
     //const w1 = .1;
     const h1 = roadWidth;
 
-    const tallness = .01;
+    const tallness = ROADHEIGHT;
 
     //why would we divide the spacing here by 2 but not for the regular stuff?
     const x = lerp(margin, width - margin, u + startX) + spacing / 2;
@@ -452,15 +454,31 @@ const sketch = ({ context }) => {
   })
 
   var cars = []; //hold all the cars
-  var car1 = createCar(.3, .4, .01, .01);
-  console.log(car1);
-  console.log(car1.x);
-  console.log(car1.getX());
-  console.log(car1.getX);
 
-  cars.forEach(data => {
+  const NUMCARS = 10;
+
+  var car1 = createCar(-.1, -.1, .2, .2);
+
+  for(var i = 0; i < NUMCARS; i++){
+    car1.createRandomCar(roadsX, roadsY);
+  }
+  
+  var carMeshes = []; //so that we can update them later
+  // console.log(car1);
+  // console.log(car1.x);
+  // console.log(car1.getX());
+  // console.log(car1.getX);
+  cars.push(car1);
+
+  //don't think car1 has to be named data instead?
+  cars.forEach(car1 => {
 
     //add the cars to the scene as the type of box you want them to be
+    var carMesh1 = car1.getCarMesh(box, cameraY, startX, startY, width, height, margin, spacing);
+
+    carMeshes.push(carMesh1);
+
+    scene.add(carMesh1);
 
   })
 

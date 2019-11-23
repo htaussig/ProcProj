@@ -7,10 +7,15 @@ const maxVel = .1;
 const maxAcc = .1;
 //const maxBrake = .1;
 
-const CARHEIGHT = .2;
+const CARSCALE = .33;
+const CARHEIGHT = .07;
+const CARWIDTH = .1;
+const CARLENGTH = .15;
+
+const CARVELOCITY = .001;
 
 //creates a new Car Object
-export function createCar(x_, y_, w_, h_){
+export function createCar(x_, y_, w_, h_, angle_){
 
     var newCar = {
         //all floats,
@@ -20,6 +25,10 @@ export function createCar(x_, y_, w_, h_){
 
         w: w_,
         h: h_,
+
+        mesh: 0,
+
+        angle: angle_,
 
         getX : function() {
             return this.x;
@@ -60,7 +69,9 @@ export function createCar(x_, y_, w_, h_){
             const amp = .9;
             const t = 1;
             const rVal = random.range(-.08, .08);
-            const tallness = CARHEIGHT;
+            const tallness = CARHEIGHT * CARSCALE;
+            mesh1.rotateY(this.angle);
+
             mesh1.position.set(
             x + w / 2,
             tallness / 2 + cameraY, 
@@ -68,16 +79,60 @@ export function createCar(x_, y_, w_, h_){
             );
         
             mesh1.scale.set(realW, tallness, realH);
+
         
             mesh1.basePosition = JSON.parse(JSON.stringify(mesh1.position)); //doing deep copies
             mesh1.baseScale = JSON.parse(JSON.stringify(mesh1.scale));
 
+            this.mesh = mesh1;
+
             return mesh1;
                    
         },
-
+        
+        //create a random car on a road the points the right direction
         createRandomCar : function(roadsX, roadsY){
-            return createCar(.1, .1, .1, .1);
+
+            const wid = CARWIDTH * CARSCALE;
+            const hei = CARLENGTH * CARSCALE;
+
+            var theX = random.range(0, 1);
+            var theY = random.range(0, 1);
+
+            var angle = 0;
+
+            var xorY = 'x';
+            if(random.value() < .5){
+                xorY = 'y';
+            }
+
+            if(xorY == 'x'){
+                //roadX is the x coordinate of one of the roads from road X (they point in the y direction)
+                const roadX = random.pick(roadsX);
+                //console.log(x);
+                theX = roadX;
+            }
+            else{
+                const roadY = random.pick(roadsY);
+                //console.log(x);
+                theY = roadY;
+                angle = Math.PI / 2;
+            }        
+        
+            return createCar(theX, theY, wid, hei, angle);
+        },
+
+        moveCar : function(){
+            const dx = Math.sin(this.angle) * CARVELOCITY;
+            const dz = Math.cos(this.angle) * CARVELOCITY;
+            this.mesh.position.set(
+                this.mesh.position.x + dx,
+                this.mesh.position.y, 
+                this.mesh.position.z + dz
+              );
+
+              //check boundaries
+            //mesh1.position.x += Math.cos(this.angle) * CARVELOCITY;
         }
 
     };

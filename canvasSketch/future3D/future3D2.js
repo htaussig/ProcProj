@@ -289,7 +289,7 @@ const sketch = ({ context }) => {
     squares = genBuildings(squares);
   }
 
-  var meshes = []; //all of our meshes
+  var buildingMeshes = []; //all of our meshes
   
 
   var buildingShapes = []
@@ -366,7 +366,7 @@ const sketch = ({ context }) => {
 
     mesh1.basePosition = JSON.parse(JSON.stringify(mesh1.position)); //doing deep copies
     mesh1.baseScale = JSON.parse(JSON.stringify(mesh1.scale));
-    meshes.push(mesh1);
+    buildingMeshes.push(mesh1);
 
     scene.add(mesh1);
   }
@@ -455,12 +455,12 @@ const sketch = ({ context }) => {
 
   var cars = []; //hold all the cars
 
-  const NUMCARS = 10;
+  const NUMCARS = 100;
 
   var car1 = createCar(-.1, -.1, .2, .2);
 
   for(var i = 0; i < NUMCARS; i++){
-    car1.createRandomCar(roadsX, roadsY);
+    cars.push(car1.createRandomCar(roadsX, roadsY));
   }
   
   var carMeshes = []; //so that we can update them later
@@ -468,7 +468,7 @@ const sketch = ({ context }) => {
   // console.log(car1.x);
   // console.log(car1.getX());
   // console.log(car1.getX);
-  cars.push(car1);
+  //cars.push(car1);
 
   //don't think car1 has to be named data instead?
   cars.forEach(car1 => {
@@ -503,7 +503,8 @@ const sketch = ({ context }) => {
       const tx = Math.cos(playangle);
       const ty = Math.sin(playangle);
       //meshes is not related to scene itself, must be added
-      meshes.forEach(mesh => {
+      //meshes should only hold buildings
+      buildingMeshes.forEach(mesh => {
         //var position = new THREE.Vector3();
         //position.setFromMatri( mesh.matrixWorld );
             
@@ -518,6 +519,10 @@ const sketch = ({ context }) => {
         );
     
         mesh.scale.set(mesh.baseScale.x , mesh.baseScale.y + 2 * yDiff, mesh.baseScale.z);
+      });
+
+      cars.forEach(car1 => {
+        car1.moveCar();
       });
 
       scene.rotation.y = playangle;

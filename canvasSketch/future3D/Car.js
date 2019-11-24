@@ -40,13 +40,22 @@ export function createCar(x_, y_, w_, h_, angle_){
 
         //create a class or something with all of the constants,
         //maybe an array, it's annoying to pass them around
-        getCarMesh : function(box, cameraY, startX, startY, width, height, margin, spacing) {
+        getCarMesh : function(box, cameraY, startX, startY, width, height, margin, spacing, color) {
     
+            //should probably do this in the constructors but going to do it here because the data is here
+            this.margin = margin;
+            this.spacing = spacing;
+            this.width = width;
+            this.height = height;
+            this.startX = startX;
+            this.startY = startY;
+            this.cameraY = cameraY;
+
             const [ u, v ] = [this.x, this.y];
             var [ w1, h1 ] = [this.w, this.h];      
         
-            const x = lerp(margin, width - margin, u + startX) + spacing;
-            const y = lerp(margin, height - margin, v + startY) + spacing; 
+            // const x = lerp(margin, width - margin, u + startX) + spacing;
+            // const y = lerp(margin, height - margin, v + startY) + spacing; 
         
             var w = lerp(margin, width - margin, w1) - spacing;
             var h = lerp(margin, height - margin, h1) - spacing;
@@ -58,36 +67,49 @@ export function createCar(x_, y_, w_, h_, angle_){
             const mesh1 = new THREE.Mesh(
             shape,
                 new THREE.MeshPhysicalMaterial({
-                    color: 'white',
+                    color: color,
                     roughness: 0.75,
                     flatShading: true
                 })
             );
+
+            this.mesh = mesh1;
         
             //const tallness = random.range(.1, .9);
-            const freq = .7;
-            const amp = .9;
-            const t = 1;
-            const rVal = random.range(-.08, .08);
+            // const freq = .7;
+            // const amp = .9;
+            // const t = 1;
+            // const rVal = random.range(-.08, .08);
             const tallness = CARHEIGHT * CARSCALE;
+            this.tallness = tallness;
             mesh1.rotateY(this.angle);
 
-            mesh1.position.set(
-            x + w / 2,
-            tallness / 2 + cameraY, 
-            y + h / 2
-            );
-        
             mesh1.scale.set(realW, tallness, realH);
 
+            this.setPosition(u, v, w1, h1, mesh1);     
+            
         
             mesh1.basePosition = JSON.parse(JSON.stringify(mesh1.position)); //doing deep copies
             mesh1.baseScale = JSON.parse(JSON.stringify(mesh1.scale));
 
-            this.mesh = mesh1;
-
             return mesh1;
                    
+        },
+
+        //enter in normal coordinates 0 to 1 to set the position of the car
+        //position of the car set from (the middle??????)
+        setPosition : function(u, v, w1, h1){
+            const x = lerp(this.margin, this.width - this.margin, u + this.startX) + this.spacing;
+            const y = lerp(this.margin, this.height - this.margin, v + this.startY) + this.spacing; 
+        
+            var w = lerp(this.margin, this.width - this.margin, w1) - this.spacing;
+            var h = lerp(this.margin, this.height - this.margin, h1) - this.spacing;
+
+            this.mesh.position.set(
+                x - w / 2,
+                this.tallness / 2 + this.cameraY, 
+                y - h / 4 //I have no idea why this is working, may want to change this 
+            );
         },
         
         //create a random car on a road the points the right direction
@@ -125,11 +147,19 @@ export function createCar(x_, y_, w_, h_, angle_){
         moveCar : function(){
             const dx = Math.sin(this.angle) * CARVELOCITY;
             const dz = Math.cos(this.angle) * CARVELOCITY;
-            this.mesh.position.set(
-                this.mesh.position.x + dx,
-                this.mesh.position.y, 
-                this.mesh.position.z + dz
-              );
+
+            this.x += dx;
+            this.y += dz;
+
+            this.setPosition(this.x, this.y, this.w, this.h);
+
+            if(this.x > 1){
+                this.x = 0;
+            }
+            if(this.y > 1){
+                this.y = 0;
+            }
+            
 
               //check boundaries
             //mesh1.position.x += Math.cos(this.angle) * CARVELOCITY;

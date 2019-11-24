@@ -14,6 +14,10 @@ const canvasSketch = require('canvas-sketch');
 import {createCar} from './Car.js';
 
 
+////////////////////////////////////////////////////////////GLOBALS
+const NUMCARS = 30;
+
+///////GLOBALS/////////////////////////////////////////////////////
 
 
 const settings = {
@@ -184,7 +188,7 @@ const sketch = ({ context }) => {
   //generating the starting roads and blocks
   var roadsX = [];
   var roadsY = [];
-  const roadWidth = 1 / 16;
+  const roadWidth = 1 / 12;
   const genCityBlocks = (blocks, roadMeshes1) => {
     //const margin = 1 / 32;
 
@@ -455,8 +459,6 @@ const sketch = ({ context }) => {
 
   var cars = []; //hold all the cars
 
-  const NUMCARS = 100;
-
   var car1 = createCar(-.1, -.1, .2, .2);
 
   for(var i = 0; i < NUMCARS; i++){
@@ -474,7 +476,7 @@ const sketch = ({ context }) => {
   cars.forEach(car1 => {
 
     //add the cars to the scene as the type of box you want them to be
-    var carMesh1 = car1.getCarMesh(box, cameraY, startX, startY, width, height, margin, spacing);
+    var carMesh1 = car1.getCarMesh(box, cameraY, startX, startY, width, height, margin, spacing, random.pick(palette));
 
     carMeshes.push(carMesh1);
 

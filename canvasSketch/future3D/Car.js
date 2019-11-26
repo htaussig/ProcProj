@@ -11,8 +11,9 @@ const CARSCALE = .33;
 const CARHEIGHT = .07;
 const CARWIDTH = .1;
 const CARLENGTH = .15;
+const CARSIZESPREAD = .02;
 
-const CARVELOCITY = .001;
+const CARVELOCITY = 1 / (14 * 30);
 
 //creates a new Car Object
 export function createCar(x_, y_, w_, h_, angle_){
@@ -80,7 +81,7 @@ export function createCar(x_, y_, w_, h_, angle_){
             // const amp = .9;
             // const t = 1;
             // const rVal = random.range(-.08, .08);
-            const tallness = CARHEIGHT * CARSCALE;
+            const tallness = (random.range(-CARSIZESPREAD, CARSIZESPREAD) + CARHEIGHT) * CARSCALE;
             this.tallness = tallness;
             mesh1.rotateY(this.angle);
 
@@ -113,13 +114,19 @@ export function createCar(x_, y_, w_, h_, angle_){
         },
         
         //create a random car on a road the points the right direction
-        createRandomCar : function(roadsX, roadsY){
+        createRandomCar : function(roadsX, roadsY, otherCars){
 
-            const wid = CARWIDTH * CARSCALE;
-            const hei = CARLENGTH * CARSCALE;
+            const wid = (random.range(-CARSIZESPREAD, CARSIZESPREAD) + CARWIDTH) * CARSCALE;
+            const hei = (random.range(-CARSIZESPREAD, CARSIZESPREAD) + CARLENGTH) * CARSCALE;
 
             var theX = random.range(0, 1);
             var theY = random.range(0, 1);
+
+            otherCars.forEach(car2 => {
+                if(this.willIntersect(theX, theY, wid, hei, car2) == true){
+                    return this.createRandomCar(roadsX, roadsY, otherCars);
+                }
+            });
 
             var angle = 0;
 
@@ -141,7 +148,14 @@ export function createCar(x_, y_, w_, h_, angle_){
                 angle = Math.PI / 2;
             }        
         
-            return createCar(theX, theY, wid, hei, angle);
+            
+            var car1 = createCar(theX, theY, wid, hei, angle);
+            if(car1 != false){
+                return car1;
+            }
+            else{
+                return this.createRandomCar(roadsX, roadsY, otherCars);
+            }
         },
 
         moveCar : function(){
@@ -163,6 +177,26 @@ export function createCar(x_, y_, w_, h_, angle_){
 
               //check boundaries
             //mesh1.position.x += Math.cos(this.angle) * CARVELOCITY;
+        },
+
+        willIntersect : function(u, v, w, h, car2){
+
+            const x = lerp(this.margin, this.width - this.margin, u + this.startX) + this.spacing;
+            const z = lerp(this.margin, this.height - this.margin, v + this.startY) + this.spacing; 
+            
+            var minX1 = x;
+            //console.log(minX1);
+            var minZ1 = z;
+            var maxX1 = x + w;
+            var maxZ1 = z + h;
+
+            var minX2 = car2.mesh.position.x;
+            var minZ2 = car2.mesh.position.z;
+            var maxX2 = car2.mesh.position.x + car2.mesh.scale.x;
+            var maxZ2 = car2.mesh.position.z + car2.mesh.scale.z;
+
+            return (minX1 <= maxX2 && maxX1 >= minX2) &&
+            (minZ1 <= maxZ2 && maxZ1 >= minZ2);
         }
 
     };

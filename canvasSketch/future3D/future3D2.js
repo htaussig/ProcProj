@@ -24,7 +24,7 @@ const settings = {
   // Make the loop animated
   animate: true,
   duration: 14,
-  //fps: 24,
+  fps: 30,
   
   // Get a WebGL canvas rather than 2D
   context: 'webgl',
@@ -461,10 +461,7 @@ const sketch = ({ context }) => {
 
   var car1 = createCar(-.1, -.1, .2, .2);
 
-  for(var i = 0; i < NUMCARS; i++){
-    cars.push(car1.createRandomCar(roadsX, roadsY));
-  }
-  
+
   var carMeshes = []; //so that we can update them later
   // console.log(car1);
   // console.log(car1.x);
@@ -472,17 +469,16 @@ const sketch = ({ context }) => {
   // console.log(car1.getX);
   //cars.push(car1);
 
-  //don't think car1 has to be named data instead?
-  cars.forEach(car1 => {
+  for(var i = 0; i < NUMCARS; i++){
+    var theNewCar = car1.createRandomCar(roadsX, roadsY, cars);
+    cars.push(theNewCar);
 
-    //add the cars to the scene as the type of box you want them to be
-    var carMesh1 = car1.getCarMesh(box, cameraY, startX, startY, width, height, margin, spacing, random.pick(palette));
+    theNewCar.getCarMesh(box, cameraY, startX, startY, width, height, margin, spacing, random.pick(palette));
 
-    carMeshes.push(carMesh1);
+    //carMeshes.push(carMesh1);
 
-    scene.add(carMesh1);
-
-  })
+    scene.add(theNewCar.mesh);
+  }
 
 
 

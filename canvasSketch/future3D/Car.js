@@ -16,9 +16,14 @@ const CARSIZESPREAD = .02;
 const CARVELOCITY = 1 / (14 * 30);
 
 //creates a new Car Object
-export function createCar(x_, y_, w_, h_, angle_){
+export function createCar(x_, y_, w_, h_, angle_, box, cameraY, startX, startY, width, height, margin, spacing, color){
+    console.log(x_, y_, w_, h_, angle_, box, cameraY, startX, startY, width, height, margin, spacing);
 
     var newCar = {
+
+        //console.log(x_, y_, w_, h_, angle_, box, cameraY, startX, startY, width, height, margin, spacing);
+
+
         //all floats,
         //it needs it's position and size
         x: x_,
@@ -27,9 +32,21 @@ export function createCar(x_, y_, w_, h_, angle_){
         w: w_,
         h: h_,
 
+        angle: angle_,
+
+        //should probably do this in the constructors but going to do it here because the data is here
+        margin: margin,
+        spacing: spacing,
+        width: width,
+        height: height,
+        startX: startX,
+        startY: startY,
+        cameraY: cameraY,
+        color: color,
+
         mesh: 0,
 
-        angle: angle_,
+        //angle: 0,
 
         getX : function() {
             return this.x;
@@ -41,17 +58,8 @@ export function createCar(x_, y_, w_, h_, angle_){
 
         //create a class or something with all of the constants,
         //maybe an array, it's annoying to pass them around
-        getCarMesh : function(box, cameraY, startX, startY, width, height, margin, spacing, color) {
+        getCarMesh : function() {
     
-            //should probably do this in the constructors but going to do it here because the data is here
-            this.margin = margin;
-            this.spacing = spacing;
-            this.width = width;
-            this.height = height;
-            this.startX = startX;
-            this.startY = startY;
-            this.cameraY = cameraY;
-
             const [ u, v ] = [this.x, this.y];
             var [ w1, h1 ] = [this.w, this.h];      
         
@@ -85,14 +93,15 @@ export function createCar(x_, y_, w_, h_, angle_){
             this.tallness = tallness;
             mesh1.rotateY(this.angle);
 
-            mesh1.scale.set(realW, tallness, realH);
-
-            this.setPosition(u, v, w1, h1, mesh1);     
+            this.setPosition(u, v, w1, h1, mesh1);    
+            mesh1.scale.set(realW, tallness, realH);       
             
         
             mesh1.basePosition = JSON.parse(JSON.stringify(mesh1.position)); //doing deep copies
             mesh1.baseScale = JSON.parse(JSON.stringify(mesh1.scale));
 
+
+            
             return mesh1;
                    
         },
@@ -103,11 +112,11 @@ export function createCar(x_, y_, w_, h_, angle_){
             const x = lerp(this.margin, this.width - this.margin, u + this.startX) + this.spacing;
             const y = lerp(this.margin, this.height - this.margin, v + this.startY) + this.spacing; 
         
-            var w = lerp(this.margin, this.width - this.margin, w1) - this.spacing;
-            var h = lerp(this.margin, this.height - this.margin, h1) - this.spacing;
+            var w = lerp(this.margin, this.width - this.margin, w1);
+            var h = lerp(this.margin, this.height - this.margin, h1);
 
             this.mesh.position.set(
-                x - w / 2,
+                x - w / 4,
                 this.tallness / 2 + this.cameraY, 
                 y - h / 4 //I have no idea why this is working, may want to change this 
             );
@@ -124,6 +133,7 @@ export function createCar(x_, y_, w_, h_, angle_){
 
             otherCars.forEach(car2 => {
                 if(this.willIntersect(theX, theY, wid, hei, car2) == true){
+                    console.log('intersected');
                     return this.createRandomCar(roadsX, roadsY, otherCars);
                 }
             });
@@ -149,7 +159,7 @@ export function createCar(x_, y_, w_, h_, angle_){
             }        
         
             
-            var car1 = createCar(theX, theY, wid, hei, angle);
+            var car1 = createCar(theX, theY, wid, hei, this.angle, this.box, this.cameraY, this.startX, this.startY, this.width, this.height, this.margin, this.spacing, this.color);
             if(car1 != false){
                 return car1;
             }
@@ -179,12 +189,15 @@ export function createCar(x_, y_, w_, h_, angle_){
             //mesh1.position.x += Math.cos(this.angle) * CARVELOCITY;
         },
 
-        willIntersect : function(u, v, w, h, car2){
+        willIntersect : function(u, v, w1, h1, car2){
 
             const x = lerp(this.margin, this.width - this.margin, u + this.startX) + this.spacing;
-            const z = lerp(this.margin, this.height - this.margin, v + this.startY) + this.spacing; 
+            const z = lerp(this.margin, this.height - this.margin, v + this.startY) + this.spacing;
             
-            var minX1 = x;
+            var w = lerp(this.margin, this.width - this.margin, w1);
+            var h = lerp(this.margin, this.height - this.margin, h1);
+            
+            let minX1 = x;
             //console.log(minX1);
             var minZ1 = z;
             var maxX1 = x + w;
@@ -194,6 +207,10 @@ export function createCar(x_, y_, w_, h_, angle_){
             var minZ2 = car2.mesh.position.z;
             var maxX2 = car2.mesh.position.x + car2.mesh.scale.x;
             var maxZ2 = car2.mesh.position.z + car2.mesh.scale.z;
+
+            console.log(this.margin, this.width, u, this.startX, this.spacing);
+            console.log(x, minX1, maxX2, maxX1, minX2,
+            minZ1,maxZ2, maxZ1,minZ2);
 
             return (minX1 <= maxX2 && maxX1 >= minX2) &&
             (minZ1 <= maxZ2 && maxZ1 >= minZ2);

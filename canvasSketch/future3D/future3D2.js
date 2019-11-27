@@ -15,7 +15,7 @@ import {createCar} from './Car.js';
 
 
 ////////////////////////////////////////////////////////////GLOBALS
-const NUMCARS = 30;
+const NUMCARS = 3;
 
 ///////GLOBALS/////////////////////////////////////////////////////
 
@@ -459,7 +459,7 @@ const sketch = ({ context }) => {
 
   var cars = []; //hold all the cars
 
-  var car1 = createCar(-.1, -.1, .2, .2);
+  var car1 = createCar(-.1, -.1, .2, .2, 0, box, cameraY, startX, startY, width, height, margin, spacing, random.pick(palette));
 
 
   var carMeshes = []; //so that we can update them later
@@ -473,7 +473,7 @@ const sketch = ({ context }) => {
     var theNewCar = car1.createRandomCar(roadsX, roadsY, cars);
     cars.push(theNewCar);
 
-    theNewCar.getCarMesh(box, cameraY, startX, startY, width, height, margin, spacing, random.pick(palette));
+    theNewCar.getCarMesh();
 
     //carMeshes.push(carMesh1);
 

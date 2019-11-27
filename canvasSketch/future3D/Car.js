@@ -17,7 +17,7 @@ const CARVELOCITY = 1 / (14 * 30);
 
 //creates a new Car Object
 export function createCar(x_, y_, w_, h_, angle_, box, cameraY, startX, startY, width, height, margin, spacing, color){
-    console.log(x_, y_, w_, h_, angle_, box, cameraY, startX, startY, width, height, margin, spacing);
+    //console.log(x_, y_, w_, h_, angle_, box, cameraY, startX, startY, width, height, margin, spacing);
 
     var newCar = {
 
@@ -43,10 +43,15 @@ export function createCar(x_, y_, w_, h_, angle_, box, cameraY, startX, startY, 
         startY: startY,
         cameraY: cameraY,
         color: color,
+        box: box,
 
         mesh: 0,
 
         //angle: 0,
+
+        setTheColor : function(col) {
+            this.color = col;
+        },
 
         getX : function() {
             return this.x;
@@ -73,10 +78,14 @@ export function createCar(x_, y_, w_, h_, angle_, box, cameraY, startX, startY, 
             var realW = w;
             var realH = h;
         
+
+            var theCol = this.color;
+            //console.log('3: ' + theCol);
+
             const mesh1 = new THREE.Mesh(
             shape,
                 new THREE.MeshPhysicalMaterial({
-                    color: color,
+                    color: theCol,
                     roughness: 0.75,
                     flatShading: true
                 })
@@ -159,7 +168,7 @@ export function createCar(x_, y_, w_, h_, angle_, box, cameraY, startX, startY, 
             }        
         
             
-            var car1 = createCar(theX, theY, wid, hei, this.angle, this.box, this.cameraY, this.startX, this.startY, this.width, this.height, this.margin, this.spacing, this.color);
+            var car1 = createCar(theX, theY, wid, hei, angle, this.box, this.cameraY, this.startX, this.startY, this.width, this.height, this.margin, this.spacing, this.color);
             if(car1 != false){
                 return car1;
             }
@@ -208,9 +217,9 @@ export function createCar(x_, y_, w_, h_, angle_, box, cameraY, startX, startY, 
             var maxX2 = car2.mesh.position.x + car2.mesh.scale.x;
             var maxZ2 = car2.mesh.position.z + car2.mesh.scale.z;
 
-            console.log(this.margin, this.width, u, this.startX, this.spacing);
-            console.log(x, minX1, maxX2, maxX1, minX2,
-            minZ1,maxZ2, maxZ1,minZ2);
+            //console.log(this.margin, this.width, u, this.startX, this.spacing);
+            //console.log(x, minX1, maxX2, maxX1, minX2,
+            //minZ1,maxZ2, maxZ1,minZ2);
 
             return (minX1 <= maxX2 && maxX1 >= minX2) &&
             (minZ1 <= maxZ2 && maxZ1 >= minZ2);

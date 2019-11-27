@@ -15,7 +15,7 @@ import {createCar} from './Car.js';
 
 
 ////////////////////////////////////////////////////////////GLOBALS
-const NUMCARS = 3;
+const NUMCARS = 30;
 
 ///////GLOBALS/////////////////////////////////////////////////////
 
@@ -471,9 +471,15 @@ const sketch = ({ context }) => {
 
   for(var i = 0; i < NUMCARS; i++){
     var theNewCar = car1.createRandomCar(roadsX, roadsY, cars);
-    cars.push(theNewCar);
 
+    
+    theNewCar.color = random.pick(palette);
+    
     theNewCar.getCarMesh();
+    
+    cars.push(theNewCar);
+    
+    
 
     //carMeshes.push(carMesh1);
 
@@ -523,7 +529,7 @@ const sketch = ({ context }) => {
         car1.moveCar();
       });
 
-      scene.rotation.y = playangle;
+      //scene.rotation.y = playangle;
 
       // var playheadReal = (playhead * 2);
       // //playheadReal = playheadReal - 1;

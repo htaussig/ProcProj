@@ -24,7 +24,7 @@ const settings = {
   // Make the loop animated
   animate: true,
   duration: 14,
-  fps: 30,
+  fps: 24,
   
   // Get a WebGL canvas rather than 2D
   context: 'webgl',
@@ -529,7 +529,7 @@ const sketch = ({ context }) => {
         car1.moveCar();
       });
 
-      //scene.rotation.y = playangle;
+      scene.rotation.y = playangle;
 
       // var playheadReal = (playhead * 2);
       // //playheadReal = playheadReal - 1;

@@ -1,4 +1,6 @@
-const MORPHCHANCE = .1;
+const { lerp }  = require('canvas-sketch-util/math');
+
+const MORPHCHANCE = .01;
 
 export class Symbol {
     constructor(x, y) {
@@ -24,9 +26,17 @@ export class Symbol {
         this.y += dy;
     }
 
-    display(context) {
+    display(context, width, height) {
+        var margin = 0;
+
         context.fillStyle = '#56df0c';
         context.textAlign = 'center';
-        context.fillText(this.curChar, this.x, this.y);
+
+        const [u, v] = [this.x, this.y];
+        const theX = lerp(margin, width - margin, u);
+        const theY = lerp(margin, height - margin, v); 
+
+        //console.log(theX, theY);
+        context.fillText(this.curChar, theX, theY);
     }
 }

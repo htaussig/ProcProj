@@ -43,8 +43,8 @@ export class Rain {
     //have the strings spawn back up top 
     boundaries(symbol){
         //how to get height in here
-        if(symbol.y > 2048){
-            symbol.y = 0;
+        if(symbol.y > 1){
+            symbol.y -= 1;
         }
     }
 
@@ -54,9 +54,9 @@ export class Rain {
 
     //dying alpha at the top of the rain
     //lighter/whiter/brighter at the very front of the rain
-    display(context) {
+    display(context, width, height) {
         this.symbols.forEach(symbol => {
-            symbol.display(context);
+            symbol.display(context, width, height);
         });
     }
 }

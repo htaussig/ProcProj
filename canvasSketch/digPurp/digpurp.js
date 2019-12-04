@@ -2,10 +2,10 @@ const canvasSketch = require('canvas-sketch');
 const random = require('canvas-sketch-util/random');
 
 
-const TEXTSIZE = 40;
+const TEXTSIZE = 30;
 const SPACING = TEXTSIZE * 0.1;
 const GRIDSIZE = TEXTSIZE + SPACING;
-const NUMCOLS = 10;
+//const NUMCOLS = 10;
 
 const RAINVEL = .01;
 
@@ -24,7 +24,7 @@ var rains = [];
 
 //have rains be created and dissappear? or always exist?
 for(var i = 0; i < 1; i += GRIDSIZE / theWidth){
-  rains.push(new Rain(i, random.value(), RAINVEL, 10, GRIDSIZE / theWidth));
+  rains.push(new Rain(i, 0, RAINVEL, 10, GRIDSIZE / theWidth, theHeight));
 }
 
 // rains.push(new Rain(200, 200, 10, 10, GRIDSIZE));

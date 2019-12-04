@@ -27,7 +27,7 @@ export class Symbol {
     }
 
     display(context, width, height) {
-        var margin = 0;
+        var margin = 100;
 
         context.fillStyle = '#56df0c';
         context.textAlign = 'center';

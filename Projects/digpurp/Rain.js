@@ -1,11 +1,8 @@
-
-
-import {Symbol} from './Symbol.js';
-const random = require('canvas-sketch-util/random');
 const freq = 6;
+const NUMTICKSMIN = 12; //before update
+const NUMTICKSMAX = 18; //exclusive
 
-
-export class Rain {
+class Rain {
     //symbols are drawn from the bottom middle
     //of the character
     //the x and y define the position of the top character in the Rain
@@ -23,7 +20,7 @@ export class Rain {
 
         this.numRows = Math.floor(numRows);
 
-        this.back = random.rangeFloor(0, this.numRows);
+        this.back = Math.floor(random(0, this.numRows));
         this.front = this.back + length;
 
         //how long to start the indecies apart
@@ -32,14 +29,15 @@ export class Rain {
         this.symbols = [];
 
         
-        this.theHeight = theHeight
+        this.theHeight = theHeight;
 
         this.displaying = true;
 
         this.initSymbols();
 
-        this.sizeChange = random.rangeFloor(-1, 2);
-
+        this.sizeChange = Math.floor(random(0, 2));
+        
+        this.ticksBeforeUpdate = 0;
     }
 
     //space and create the symbols appropritate
@@ -50,7 +48,7 @@ export class Rain {
         //console.log(this.theHeight, this.spacing);  
 
         for(var i = 0; i < this.numRows; i += 1){
-            this.symbols.push(new Symbol(theX, theY))
+            this.symbols.push(new Symbol(theX, theY));
             theY += this.spacing;
         }
     }
@@ -65,11 +63,13 @@ export class Rain {
         });
     }
 
+    //does not happen every frame for sure
     updateState(){
-        this.sizeChange = random.rangeFloor(-1, 2);
+        this.sizeChange = Math.floor(random(0, 2));
+        this.ticksBeforeUpdate = Math.floor(random(NUMTICKSMIN, NUMTICKSMAX));
     }
 
-    moveIndecies(time){
+    moveIndecies(){
 
         var SPEEDMUL = .5;
 
@@ -119,28 +119,50 @@ export class Rain {
     //     }
     // }
 
-    update(time) {
-        this.morphAndMoveSymbols(time);
+    update() {
+        if(this.ticksBeforeUpdate == 0){
+          this.updateState();
+        }
+        else{
+          this.ticksBeforeUpdate--;
+        }
+        this.morphAndMoveSymbols();
     }
 
     //dying alpha at the top of the rain
     //lighter/whiter/brighter at the very front of the rain
-    display(context, width, height, time) {
+    display() {
         //console.log("hi");
         var theBack = Math.floor(this.front);
         var theFront = Math.floor(this.back);
+       
         
         if(theBack < theFront){
             theBack += this.numRows;
         }
 
-        for(var i = theFront; i < theBack; i++){
-            var index = i % Math.floor(this.numRows);
-            //console.log(index);
-            var symbol = this.symbols[index];
+        //for(var i = theFront; i < theBack; i++){
+        //    var index = i % Math.floor(this.numRows);
+        //    //console.log(index);
+        //    var symbol = this.symbols[index];
 
-            //sometimes above 1 but it's fine
-            symbol.display(context, width, height, (i - theFront) / Math.floor(this.length));
+        //     //float from 0 to 1, 0 is the back,  1 is the  front
+        //    var theLength = theBack - theFront;
+        //    var position = (i - theFront) / (theLength - 1);
+            
+        //    symbol.display();
+        //}
+        
+        var index = theFront % Math.floor(this.numRows);
+        var symbol = this.symbols[index];
+        symbol.setOn();
+        
+        colorMode(HSB, 359, 99, 99);
+        for(var i = 0; i < Math.floor(this.numRows); i++){
+          var symbol = this.symbols[i];
+          symbol.display();
         }
+        
+        this.lastFront = theFront;
     }
 }

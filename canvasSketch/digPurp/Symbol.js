@@ -1,3 +1,5 @@
+import { Color } from 'three';
+
 const { lerp }  = require('canvas-sketch-util/math');
 
 const MORPHCHANCE = .01;
@@ -26,10 +28,13 @@ export class Symbol {
         this.y += dy;
     }
 
-    display(context, width, height) {
+    display(context, width, height, position) {
         var margin = 100;
 
-        context.fillStyle = '#56df0c';
+        //almost between 0 and 1
+
+        //console.log(position);
+        context.fillStyle = 'hsl(100, 100, 100)';
         context.textAlign = 'center';
 
         const [u, v] = [this.x, this.y];

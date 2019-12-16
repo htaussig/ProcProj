@@ -1,6 +1,4 @@
-const MORPHCHANCE = .01;
-const ONLIFE = 140;
-const BRIGHTDIFFMAG = 20;
+
 
 class Symbol {
   constructor(x, y) {
@@ -60,7 +58,7 @@ class Symbol {
   display() {
     this.update();
     //push();
-    var margin = 100;
+    var margin = MARGIN;
 
     //almost between 0 and 1
 
@@ -75,7 +73,7 @@ class Symbol {
       fill(115, 99, b);
     }
 
-    textAlign(CENTER, CENTER);
+    textAlign(LEFT, TOP);
 
     const [u, v] = [this.x, this.y];
     const theX = lerp(margin, width - margin, u);

@@ -1,6 +1,4 @@
-const freq = 6;
-const NUMTICKSMIN = 12; //before update
-const NUMTICKSMAX = 18; //exclusive
+
 
 class Rain {
     //symbols are drawn from the bottom middle
@@ -64,8 +62,15 @@ class Rain {
     }
 
     //does not happen every frame for sure
-    updateState(){
-        this.sizeChange = Math.floor(random(0, 2));
+    //app
+    updateState(){  
+        if(Math.random(1) < 0.5){
+          this.sizeChange = 0;
+        }
+        else{
+          this.sizeChange = 1;
+        }
+        //console.log(this.sizeChange);
         this.ticksBeforeUpdate = Math.floor(random(NUMTICKSMIN, NUMTICKSMAX));
     }
 
@@ -75,11 +80,11 @@ class Rain {
 
         var dBack;
         var dFront;
-        if(this.sizeChange == 0){
+        if(this.sizeChange == 1){
             dBack = 1;
             dFront = 1;
         } 
-        else if(this.sizeChange == 1){
+        else if(this.sizeChange == 0){
             dBack = 0;
             dFront = 1;
         } 

@@ -7,7 +7,7 @@
 var TEXTSIZE = 30;
 var w = 15;
 var NUMWORDS = 100;
-var RANDOMSTART = false;
+var RANDOMSTART = true;
 
 var seedNum = 0; //set this to 0 for random seed, non-zero for that specific seed
 
@@ -25,8 +25,9 @@ var myFont;
 
 var words = [];
 //just put these in lower case and then we randomize
-words.push("merrychristmas!");
-words.push("filthyanimal!");
+words.push("merry");
+words.push("christmas");
+words.push("ufilthyanimal");
 words.push("happy");
 words.push("holidays");
 words.push("poop");
@@ -146,6 +147,7 @@ function addWord(){
     console.log("hey");
     vOrH = 1;
   }
+  //
   for(var n = 0; n < word.length; n++){
     if(vOrH == 0){
       j++;
@@ -179,6 +181,11 @@ function addWord(){
     
     symbolBoard[i % columns][j % rows].lockedChar = theChar;
   }
+}
+
+//check if the word will fit 
+function willWordFit(){
+  
 }
 
 function isLetter(str) {

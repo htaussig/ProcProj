@@ -48,6 +48,7 @@ function setup() {
     rains.push(new Rain(i, 0, RAINVEL, 15, GRIDSIZE / width, height));
   }
   
+  capturer.start();
 }
 
 const displayAll = () => {
@@ -73,6 +74,12 @@ function draw() {
     //textSize(TEXTSIZE);
     displayAll();
     if(RECORDING){
-      
+      capturer.capture(document.getElementById('defaultCanvas0'));
     }
+}
+
+function keyPressed(){
+  console.log('finished recording.');
+  capturer.stop();
+  capturer.save();
 }

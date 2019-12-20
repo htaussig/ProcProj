@@ -3,11 +3,11 @@
 //update() every frame
 //display()
 
-const MARGIN = 0;
-const ONLIFE = 60;
-const BRIGHTDIFFMAG = 20;
-const WORDBRIGHTBONUS = BRIGHTDIFFMAG;
-const MORPHCHANCE = 0.01;
+var MARGIN = 0;
+var ONLIFE = 60;
+var BRIGHTDIFFMAG = 20;
+var WORDBRIGHTBONUS = BRIGHTDIFFMAG;
+var MORPHCHANCE = 0.01;
 
 
 class Symbol {

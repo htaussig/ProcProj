@@ -4,10 +4,10 @@
  * (<a href="http://natureofcode.com">natureofcode.com</a>)
  */
 
-const TEXTSIZE = 30;
-const w = 15;
-const NUMWORDS = 100;
-const RANDOMSTART = false;
+var TEXTSIZE = 30;
+var w = 15;
+var NUMWORDS = 100;
+var RANDOMSTART = false;
 
 var seedNum = 0; //set this to 0 for random seed, non-zero for that specific seed
 
@@ -20,7 +20,7 @@ var symbolBoard;
 var generating = true;
 
 
-let myFont;
+var myFont;
 
 
 var words = [];

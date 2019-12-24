@@ -4,12 +4,23 @@
  * (<a href="http://natureofcode.com">natureofcode.com</a>)
  */
 
+var RECORDING = false;
+// the canvas capturer instance
+var fps = 30;
+var capturer = new CCapture( { 
+format: 
+'png', framerate: 
+  fps
+}
+);
+
 var TEXTSIZE = 30;
 var w = 15;
 var NUMWORDS = 100;
 var RANDOMSTART = true;
 
-var seedNum = 0; //set this to 0 for random seed, non-zero for that specific seed
+var RANDOMSEED = true;
+var seedNum = -5323301.911867486; //set this to 0 for random seed, non-zero for that specific seed
 
 var columns;
 var rows;
@@ -23,6 +34,7 @@ var generating = true;
 var myFont;
 
 
+
 var words = [];
 //just put these in lower case and then we randomize
 words.push("merry");
@@ -32,21 +44,13 @@ words.push("happy");
 words.push("holidays");
 words.push("poop");
 words.push("snow");
-words.push("santawatches");
-//words.push("nutsack");
 //words.push(":(");
 //words.push("XD");
-//words.push("iamsocool");
-//words.push("wordswords");
-//words.push("fuck");
-//words.push("idiot!");
-//words.push("shit");
-//words.push("smallpoop");
-//words.push("damn");
+words.push("words");
 //words.push("hell");
-//words.push("crap");
+words.push("crap");
 
-function preload(){
+function preload() {
   //myFont = loadFont('monospace');
 }
 
@@ -72,23 +76,25 @@ function setup() {
   }
   strokeWeight(0);
   init();
+  if (RECORDING) {
+    capturer.start();
+  }
 }
 
 function draw() {
   background(0);
-  if(frameCount % 2 == 0){
-    if(generating){
-       generate();
+  if (frameCount % 2 == 0) {
+    if (generating) {
+      generate();
     }
   }
-  for ( var i = 0; i < columns;i++) {
-    for ( var j = 0; j < rows;j++) {
-      if ((board[i][j] == 1)){
+  for ( var i = 0; i < columns; i++) {
+    for ( var j = 0; j < rows; j++) {
+      if ((board[i][j] == 1)) {
         fill(0);
         symbolBoard[i][j].setOn();
-      }
-      else {
-        fill(255); 
+      } else {
+        fill(255);
       }
       //symbolBoard[i][j].update();
       stroke(0);
@@ -99,7 +105,9 @@ function draw() {
       pop();
     }
   }
-  
+  if (RECORDING) {
+    capturer.capture(document.getElementById('defaultCanvas0'));
+  }
 }
 
 // Fill board randomly
@@ -111,7 +119,7 @@ function init() {
       if (i == 0 || j == 0 || i == columns-1 || j == rows-1) board[i][j] = 0;
       // Filling the rest randomly
       else board[i][j] = floor(random(2));
-      if(!RANDOMSTART){
+      if (!RANDOMSTART) {
         board[i][j] = 0;
         generating = false;
       }
@@ -123,70 +131,87 @@ function init() {
 }
 
 //keep in mind the random seeding will only work perfectly on the first run?
-function initSeeding(){  
-  if(seedNum == 0){
+function initSeeding() {  
+  if (RANDOMSEED) {
     seedNum = random(-10000000, 10000000);
   }
   randomSeed(seedNum);
   print("the current seed is: " + seedNum);
 }
 
-function setWords(){
-  for(var i = 0; i < NUMWORDS; i++){
-    addWord(); 
+function setWords() {
+  for (var i = 0; i < NUMWORDS; i++) {
+    addWord();
   }
 }
 
-function addWord(){
+function addWord() {
   var i = Math.floor(random(0, columns));
   var j = Math.floor(random(0, rows));
   var indexAdd = 0; //add to v or h depending on the var below  
   var word = words[Math.floor(random(0, words.length))];
   var vOrH = 0; //vertical or horizontal
-  if(random(0, 1) < 0.9){
-    console.log("hey");
+  if (random(0, 1) < 0.9) {
+    //console.log("hey");
     vOrH = 1;
+    //horizontal
   }
-  //
-  for(var n = 0; n < word.length; n++){
-    if(vOrH == 0){
-      j++;
-    }
-    else{
-      i++;
-    }
-    var theChar = word.charAt(n);
-    var charCode = theChar.charCodeAt(0);
-    
-    //randomize capitilization
-    if(isLetter(theChar)){
-      //if(isUpperCase(theChar)){
-        if(random() < 0.5){
+  if (isWordSafe(word.length, vOrH, i, j)) {
+    for (var n = 0; n < word.length; n++) {
+      if (vOrH == 0) {
+        j++;
+      } else {
+        i++;
+      }
+      var theChar = word.charAt(n);
+      var charCode = theChar.charCodeAt(0);
+
+      //randomize capitilization
+      if (isLetter(theChar)) {
+        //if(isUpperCase(theChar)){
+        if (random() < 0.5) {
           charCode -= 32;
         }
-      //}
-      //else if(isLowerCase(theChar)){
-      //  if(random() < 0.5){
-      //    charCode -= 32;
-      //  }
-      //}
-      //else{
-      //  print("error in is letter, not upper or lower case");
-      //}
+        //}
+        //else if(isLowerCase(theChar)){
+        //  if(random() < 0.5){
+        //    charCode -= 32;
+        //  }
+        //}
+        //else{
+        //  print("error in is letter, not upper or lower case");
+        //}
+      }
+
+
+      theChar = String.fromCharCode(charCode);
+      //print("newChar: " + theChar + " charCode: " + charCode);
+
+      symbolBoard[i % columns][j % rows].lockedChar = theChar;
     }
-    
-    
-    theChar = String.fromCharCode(charCode);
-    //print("newChar: " + theChar + " charCode: " + charCode);
-    
-    symbolBoard[i % columns][j % rows].lockedChar = theChar;
+  } else {
+    addWord();
   }
 }
 
-//check if the word will fit 
-function willWordFit(){
-  
+//will the word fit without being over another word
+function isWordSafe(theLength, vOrH, i, j) {
+  for (var n = 0; n < theLength; n++) {
+
+    if (vOrH == 0) {
+      j++;
+    } else {
+      i++;
+    }
+    if (symbolBoard[i % columns][j % rows].lockedChar != 'NONE') {
+      //print("not a safe word placement");
+      return false;
+    }
+  }
+  return true;
 }
+
+
 
 function isLetter(str) {
   return str.length === 1 && str.match(/[A-Z|a-z]/i);
@@ -202,7 +227,7 @@ function isLowerCase(str) {
 
 // The process of creating the new generation
 function generate() {
-  
+
   // Loop through every spot in our 2D array and check spots neighbors
   for (var x = 1; x < columns - 1; x++) {
     for (var y = 1; y < rows - 1; y++) {
@@ -231,16 +256,16 @@ function generate() {
   next = temp;
 }
 
-function keyPressed(){
-  if(key == 's'){
+function keyPressed() {
+  if (key == 's') {
     print("saving video");
-    //TODO: save video here
-  }
-  else if(key == 'g'){
+    console.log('finished recording.');
+    capturer.stop();
+    capturer.save();
+  } else if (key == 'g') {
     generating = !generating;
     print("toggling generation to: " + generating);
-  }
-  else{
+  } else {
     init();
   }
 }
@@ -251,7 +276,7 @@ function mousePressed() {
   //columns, rows
   var i = floor(mouseX / w);
   var j = floor(mouseY / w);
-  if(i >= 0 && i < columns && j >= 0 && j < columns){
+  if (i >= 0 && i < columns && j >= 0 && j < columns) {
     board[i][j] = 1;
     symbolBoard[i][j].setOn();
   }

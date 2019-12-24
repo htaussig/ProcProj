@@ -17,7 +17,6 @@ class Symbol {
 
     this.setRandomSymbol();
 
-
     this.isOn = false;
     this.brightness = 0;
 

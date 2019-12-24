@@ -72,6 +72,9 @@ class Rain {
         }
         //console.log(this.sizeChange);
         this.ticksBeforeUpdate = Math.floor(random(NUMTICKSMIN, NUMTICKSMAX));
+        if(this.sizeChange == 0){
+          this.ticksBeforeUpdate = Math.floor(this.ticksBeforeUpdate / 2);
+        }
     }
 
     moveIndecies(){

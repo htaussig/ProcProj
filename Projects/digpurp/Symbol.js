@@ -7,11 +7,12 @@ class Symbol {
 
     this.setRandomSymbol();
 
-
     this.isOn = false;
     this.brightness = 0;
 
     this.brightDiff = 0;
+    
+    this.lockedChar = "NONE";
   }
 
   maybeMorph() {
@@ -21,12 +22,23 @@ class Symbol {
   }
 
   setRandomSymbol() {
+    //var v = random();
+
+    //if (v < 1) {
+    //  this.curChar = String.fromCharCode(
+    //    0x30A0 + Math.round(Math.random() * 96));
+    //} else if (v < .99) {
+    //  this.curChar = Math.floor(random(1, 10));
+    //}
+
     var v = random();
 
-    if (v < 1) {
+    if (v < .9) {
+      //this.curChar = String.fromCharCode(
+      //  0x30A0 + Math.round(Math.random() * 96));
       this.curChar = String.fromCharCode(
-        0x30A0 + Math.round(Math.random() * 96));
-    } else if (v < .99) {
+        33 + Math.round(random() * (66 + 27)));
+    } else if (v < 1) {
       this.curChar = Math.floor(random(1, 10));
     }
   }
@@ -53,6 +65,14 @@ class Symbol {
     if (this.brightness <= 0) {
       this.isOn = false;
     }
+    
+    //get the word back in its place but let it morph a little
+    if(this.lockedChar != "NONE" && this.curChar != this.lockedChar){
+      if(random() < 0.1){
+        this.curChar = this.lockedChar;
+        //65 = 'A', 97 = 'a'
+      }
+    }
   }
 
   display() {
@@ -73,7 +93,7 @@ class Symbol {
       fill(115, 99, b);
     }
 
-    textAlign(LEFT, TOP);
+    textAlign(CENTER, TOP);
 
     const [u, v] = [this.x, this.y];
     const theX = lerp(margin, width - margin, u);
@@ -96,6 +116,10 @@ class Symbol {
 
       if (i != 0) {
         fill(255, 1);
+      }
+      
+      if(this.lockedChar != "NONE"){
+        //fill(255);
       }
 
       text(this.curChar, theX, theY);

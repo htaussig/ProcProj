@@ -1,8 +1,8 @@
 import processing.svg.*;
 
-boolean RECORDING = false;
+boolean RECORDING = true;
 
-int NUMSTROKES = 1;
+int NUMSTROKES = 3;
 int STROKEWEIGHT = 2;
 color THECOLOR = color(50, 50);
 
@@ -46,17 +46,20 @@ void drawTheSun(float radius){
   translate(0, -radius);
   
   float rectThickness = .06 * radius; //thickness of each rect thingy
-  float distBetweenRectsInc = .003 * radius;
+  float distBetweenRectsInc = .0042 * radius;
   float emptyDist = distBetweenRectsInc;
   
-  float pixPerLine = 2; //how many pixels to pass before drawing another line
+  //float pixPerLine = 3; //how many pixels to pass before drawing another line
+  //vary from 1 to 3
   
   strokeWeight(STROKEWEIGHT);
   stroke(0);
   
   float circleYpos = 0;
+  circleYpos += distBetweenRectsInc;
   while(circleYpos <= radius * 2){
     
+    float pixPerLine = map(circleYpos, 0, radius * 2, 3, 1);
     drawRectInCirc(circleYpos, rectThickness, pixPerLine, radius);
     
     circleYpos += rectThickness;

@@ -1,3 +1,4 @@
+import processing.svg.*;
 
 ArrayList<WaveStrip> arr;
 
@@ -6,9 +7,11 @@ float NUMWAVES = 40;
 //number of triangles per row
 int NUMTRIS = 6;
 
-float PERIOD = 3.5;
+float PERIOD = PI;
+float xPERIOD = PI;
 
 boolean RECORDING = false;
+boolean PLOTTING = true;
 
 //var capture;
 //var c;
@@ -31,6 +34,10 @@ void setup() {
   /**capture = createCapture(VIDEO);
    capture.size(320, 240);
    capture.hide();**/
+   
+   if(PLOTTING){
+     beginRecord(SVG, xPERIOD + PERIOD + "waveStripe.svg");
+   }
 }
 
 void drawBackground(){
@@ -68,4 +75,13 @@ void draw() {
       saveFrame("movie/f###-waveStrips.png");
     }
   }
+  if(PLOTTING){
+     endRecord();
+     stop();
+  }
+}
+
+void keyPressed(){
+  println("frame saved");
+  saveFrame("movie/f###-waveStrips.png");
 }

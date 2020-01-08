@@ -105,6 +105,7 @@ function draw() {
       pop();
     }
   }
+  //filter(BLUR, 6)
   if (RECORDING) {
     capturer.capture(document.getElementById('defaultCanvas0'));
   }

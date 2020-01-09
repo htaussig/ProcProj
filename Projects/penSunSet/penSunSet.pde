@@ -1,15 +1,21 @@
 import processing.svg.*;
 
-boolean RECORDING = true;
+boolean RECORDING = false;
 
 int NUMSTROKES = 3;
 int STROKEWEIGHT = 2;
 color THECOLOR = color(50, 50);
 
+float MOUNTAMP = 170;
+float MOUNTSHARP = 10;
+int NUM_MOUNTS = 2;
+float MOUNT_HEIGHT_DEC = 20;
+float MOUNT_START_Y = 400;
+
 ArrayList<PaintStroke> strokes;
 
 void setup(){
-  size(600, 600);
+  size(800, 800);
   //strokes = new ArrayList<PaintStroke>();
   ////strokes.add(new PaintStroke());
   
@@ -26,8 +32,22 @@ void setup(){
   //for (PaintStroke stroke : strokes) {
   //  stroke.display();
   //}
-  translate(width / 2, height / 2);
+  
+  pushMatrix();
+  translate(width / 2, height / 2.8);
   drawTheSun(200);
+  popMatrix();
+  
+  pushMatrix();
+  translate(0, MOUNT_START_Y);
+  for(int i = 0; i < NUM_MOUNTS; i++){
+     translate(0, MOUNT_HEIGHT_DEC);
+     drawMountains(MOUNTAMP);
+  }
+  popMatrix();
+  
+  drawGrid();
+  
   
   if(RECORDING){
     endRecord();
@@ -47,7 +67,7 @@ void drawTheSun(float radius){
   
   float rectThickness = .06 * radius; //thickness of each rect thingy
   float distBetweenRectsInc = .0042 * radius;
-  float emptyDist = distBetweenRectsInc;
+  float emptyDist = distBetweenRectsInc * 3;
   
   //float pixPerLine = 3; //how many pixels to pass before drawing another line
   //vary from 1 to 3
@@ -59,7 +79,8 @@ void drawTheSun(float radius){
   circleYpos += distBetweenRectsInc;
   while(circleYpos <= radius * 2){
     
-    float pixPerLine = map(circleYpos, 0, radius * 2, 3, 1);
+    float pixPerLine = map(circleYpos, 0, radius * 2, 4, 1);
+    //println(pixPerLine);
     drawRectInCirc(circleYpos, rectThickness, pixPerLine, radius);
     
     circleYpos += rectThickness;
@@ -85,5 +106,31 @@ void drawRectInCirc(float circleYpos, float rectThickness, float pixPerLine, flo
        
     popMatrix();
     
+  }
+}
+
+void drawMountains(float amplitude){
+  
+  beginShape();
+  vertex(0, 50);
+  
+  float numPoints = 35.0;
+  float noiseAdd = random(-1000000, 1000000);
+  for(float i = 0; i <= 1.01; i += 1.0 / numPoints){
+    vertex(i * width, - noise((i * MOUNTSHARP) + noiseAdd) * amplitude);
+  }
+  
+  vertex(width, 50);
+  endShape();
+}
+
+void drawGrid(){
+  float yVal = (MOUNT_HEIGHT_DEC * NUM_MOUNTS) + MOUNT_START_Y;
+ 
+  float heightInc = 0; 
+  
+  while(yVal < height){
+    line(0, yVal, width, yVal);
+    yVal += ++heightInc;
   }
 }

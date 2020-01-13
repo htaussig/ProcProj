@@ -19,7 +19,7 @@ public class Rose {
     beginShape();
     stroke(0, 0, 255);
     strokeWeight(0.5);
-    for (int theta = 0; theta <= 360; theta++) {
+    for (int theta = 0; theta <= NUMLINES; theta++) {
       float k = theta * d * PI / 180;
       float r = 300 / NUMCOLS * sin(n * k);
       float x1 = r * cos(k) + width/2;

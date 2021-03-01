@@ -15,6 +15,6 @@
     "eases": "^1.0.8",
     "ffmpeg": "0.0.4",
     "nice-color-palettes": "^3.0.0",
-    "three": "^0.110.0"
+    "three": "^0.125.0"
   }
 }

@@ -28,7 +28,7 @@ Projects/canvasSketch has my new canvasSketch projects
 
 This project is licensed under the MIT License - see the [LICENSE.md](LICENSE.md) file for details
 
-## Inspirtation
+## Inspiration
 *I very often borrow code from these people!
 * [Manoloide](https://twitter.com/manoloidee)
 * [Daniel Shiffman](https://twitter.com/shiffman)

@@ -20,6 +20,6 @@
     "googleapis": "^45.0.0",
     "nice-color-palettes": "^3.0.0",
     "poisson-disk-sampling": "^1.0.6",
-    "three": "^0.109.0"
+    "three": "^0.137.0"
   }
 }
